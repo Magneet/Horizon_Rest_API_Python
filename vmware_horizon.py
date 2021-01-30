@@ -65,7 +65,7 @@ class Monitor:
         response = requests.get(f'{self.url}/rest/monitor/farms', verify=False,  headers=self.access_token)
         return response.json()
 
-    def farm(self):
+    def farm(self, id):
         response = requests.get(f'{self.url}/rest/monitor/v1/farms/{id}', verify=False,  headers=self.access_token)   # Only available in Horion 8.0 2006 and newer
         return response.json()
 
