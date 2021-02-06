@@ -10,15 +10,24 @@ username = "m_wouter"
 domain = "loft.lab"
 pw = getpass.getpass()
 
+
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
 
 
 #pools = vmware_horizon.Pools(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-monitor=vmware_horizon.Monitor(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-results = monitor.ad_domain()
+settings=vmware_horizon.Settings(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+results = settings.get_ic_domain_accounts()
 for i in results:
-    print(i["dns_name"])
+    if i["username"] == "m_wouter":
+        id=i["id"]
+
+
+result=settings.update_ic_domain_account(id=id, password=pw)
+print(result)
+
+print(settings.get_ic_domain_accounts())
+#print(results)
 hvconnectionobj.hv_disconnect()
 
 #id = result[0]["id"]

@@ -19,16 +19,24 @@ class Connection:
         json_data = json.dumps(data)
 
         response = requests.post(f'{self.url}/rest/login', verify=False, headers=headers, data=json_data)
-        data = response.json()
-
-        self.access_token = {
-            'accept': '*/*',
-            'Authorization': 'Bearer ' + data['access_token']
-        }
-        return self
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            data = response.json()
+            self.access_token = {
+                'accept': '*/*',
+                'Authorization': 'Bearer ' + data['access_token']
+            }
+            return self
 
     def hv_disconnect(self):
-        requests.post(f'{self.url}/rest/logout', verify=False, headers=self.access_token)
+        response = requests.post(f'{self.url}/rest/logout', verify=False, headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
 
 class Pools:
     def __init__(self, url, access_token):
@@ -50,7 +58,7 @@ class Monitor:
         self.url = url
         self.access_token = access_token
 
-    def ad_domain(self):
+    def ad_domains(self):
         response = requests.get(f'{self.url}/rest/monitor/ad-domains', verify=False,  headers=self.access_token)
         try:
             response.raise_for_status()
@@ -214,6 +222,90 @@ class Monitor:
 
     def true_sso(self):
         response = requests.get(f'{self.url}/rest/monitor/v1/true-sso', verify=False,  headers=self.access_token) # Only available in Horion 7.11 and newer
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+class Settings:
+    def __init__(self, url, access_token):
+        self.url = url
+        self.access_token = access_token
+
+    def get_ic_domain_accounts(self):
+        response = requests.get(f'{self.url}/rest/config/v1/ic-domain-accounts', verify=False,  headers=self.access_token) # Since Horizon 7.11
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_ic_domain_account(self,id):
+        response = requests.get(f'{self.url}/rest/config/v1/ic-domain-accounts/{id}', verify=False,  headers=self.access_token) # Since Horizon 7.11
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def new_ic_domain_account(self,ad_domain_id,username,password):
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {"ad_domain_id": ad_domain_id, "password": password, "username": username}
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/ic-domain-accounts', verify=False,  headers=headers, data=json_data)   # Since Horizon 7.11
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            if response.status_code == 400 or response.status_code == 409:
+                response = response.json()
+                return "Error: " + str(e) + ", " + response['error_message']
+            else:
+                return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def update_ic_domain_account(self,id,password):
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {"password": password}
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/ic-domain-accounts/{id}', verify=False,  headers=headers, data=json_data)   # Since Horizon 7.11
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            if response.status_code == 400:
+                response = response.json()
+                return "Error: " + str(e) + ", " + response['error_message']
+            else:
+                return "Error: " + str(e)
+        else:
+            return response.status_code
+
+    def delete_ic_domain_account(self,id):
+        response = requests.delete(f'{self.url}/rest/config/v1/ic-domain-accounts/{id}', verify=False,  headers=self.access_token)  # Since Horizon 7.11
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            if response.status_code == 400:
+                response = response.json()
+                return "Error: " + str(e) + ", " + response['error_message']
+            else:
+                return "Error: " + str(e)
+        else:
+            return response.json()
+
+class External:
+    def __init__(self, url, access_token):
+        self.url = url
+        self.access_token = access_token
+
+    def get_ad_domains(self):
+        response = requests.get(f'{self.url}/rest/external/v1/ad-domains', verify=False,  headers=self.access_token) #since Horizon 7.11
         try:
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
