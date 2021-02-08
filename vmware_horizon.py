@@ -398,14 +398,13 @@ class Settings:
         """Lists Virtual Centers configured in the environment.
 
         Available for Horizon 7.11 and later."""
-        response = requests.delete(f'{self.url}/rest/config/v1/virtual-centers', verify=False,  headers=self.access_token)
+        response = requests.get(f'{self.url}/rest/config/v1/virtual-centers', verify=False,  headers=self.access_token)
         try:
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             return "Error: " + str(e)
         else:
             return response.json()
-
 
 class External:
     def __init__(self, url: str, access_token: dict):
