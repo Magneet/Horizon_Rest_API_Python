@@ -16,10 +16,16 @@ hvconnectionobj.hv_connect()
 
 
 
-obj = vmware_horizon.Settings(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+obj = vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+#print(obj.get_settings_general())
 
-vc = obj.list_virtual_centers()
-print(vc)
+changes = {}
+changes["forced_logoff_message"] = "This computer will selfdestruct in no-time"
+changes["restricted_client_message"] = "Please use a proper client"
+print(changes)
+result = obj.update_settings_general(settings=changes)
+print(result)
+#print(obj.get_settings_general())
 
 
 

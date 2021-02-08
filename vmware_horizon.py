@@ -304,9 +304,9 @@ class Monitor:
         else:
             return response.json()
 
-class Settings:
+class Config:
     def __init__(self, url: str, access_token: dict):
-        """Default object for the settings class used for the general configuration of VMware Horizon."""
+        """Default object for the config class used for the general configuration of VMware Horizon."""
         self.url = url
         self.access_token = access_token
 
@@ -403,6 +403,86 @@ class Settings:
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_environment_properties(self) -> dict:
+        """Retrieves the environment settings.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/environment-properties', verify=False,  headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_settings(self) -> dict:
+        """Retrieves the environment settings.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/settings', verify=False,  headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_settings_feature(self) -> dict:
+        """Retrieves the feature settings.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/settings/feature', verify=False,  headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_settings_general(self) -> dict:
+        """Retrieves the general settings.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/settings/general', verify=False,  headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def get_settings_security(self) -> dict:
+        """Retrieves the security settings.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/settings/security', verify=False,  headers=self.access_token)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return "Error: " + str(e)
+        else:
+            return response.json()
+
+    def update_settings_general(self,settings: dict):
+        """Updates the general settings.
+
+        Requires a dictionary with updated settings
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(settings)
+        response = requests.put(f'{self.url}/rest/config/v1/settings/general', verify=False,  headers=self.access_token, data=json_data)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            if response.status_code == 400:
+                response = response.json()
+                return "Error: " + str(e) + ", " + response['error_message']
+            else:
+                return "Error: " + str(e)
         else:
             return response.json()
 

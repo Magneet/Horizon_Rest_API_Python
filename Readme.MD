@@ -25,3 +25,6 @@ cs = obj.connection_servers()
 Documentation
 -------------
 [vmware_horizon.md](vmware_horizon.md)
+
+Changelog
+[changelog.md](changelog.ms)
