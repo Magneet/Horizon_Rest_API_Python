@@ -1,10 +1,10 @@
-##Intro:
+## Intro:
 
 With this repo I will try to create a VMware Horion python module using the Horizon REST API's.
 development is started from Horizon 8 2006
 
 
-##Usage:
+## Usage:
 
 First define url, username, domain and the password
 * url = input("URL\n")
@@ -22,10 +22,10 @@ Create an object for the class you want to use, Monitor in this case
 Than perform the query you need, in this example get the COnnection Servers
 cs = obj.connection_servers()
 
-##Documentation
+## Documentation
 
 [vmware_horizon.md](vmware_horizon.md)
 
-##Changelog
+## Changelog
 
 [changelog.md](changelog.ms)
