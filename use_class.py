@@ -11,7 +11,6 @@ domain = "loft.lab"
 pw = getpass.getpass()
 
 
-
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
 
