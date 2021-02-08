@@ -11,22 +11,30 @@ domain = "loft.lab"
 pw = getpass.getpass()
 
 
+
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
 
 
-#pools = vmware_horizon.Pools(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-settings=vmware_horizon.Settings(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-results = settings.get_ic_domain_accounts()
-for i in results:
-    if i["username"] == "m_wouter":
-        id=i["id"]
+
+obj = vmware_horizon.Settings(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+
+vc = obj.list_virtual_centers()
+print(vc)
 
 
-result=settings.update_ic_domain_account(id=id, password=pw)
-print(result)
 
-print(settings.get_ic_domain_accounts())
+# settings=vmware_horizon.Settings(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+# results = settings.get_ic_domain_accounts()
+# for i in results:
+#     if i["username"] == "m_wouter":
+#         id=i["id"]
+
+
+# result=settings.update_ic_domain_account(id=id, password=pw)
+# print(result)
+
+# print(settings.get_ic_domain_accounts())
 #print(results)
 hvconnectionobj.hv_disconnect()
 
