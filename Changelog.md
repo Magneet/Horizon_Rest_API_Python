@@ -12,3 +12,10 @@
         * get_settings-security
     * Added but not working yet
         * update_settings_general
+
+09-02-2021
+* Changed Error handling from returning a value to raising an error for most modules
+* found error in disconnect
+* Config Class
+    * rename list_virtual_centers to get_virtual_centers
+    * Made the update_settings_general work properly
