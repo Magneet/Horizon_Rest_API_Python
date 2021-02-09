@@ -46,7 +46,13 @@ class Connection:
 
     def hv_disconnect(self):
         """"Used to close close the connection with the VMware Horizon REST API's"""
-        response = requests.post(f'{self.url}/rest/logout', verify=False, headers=self.refresh_token)
+        headers = {
+            'accept': '*/*',
+            'Content-Type': 'application/json',
+        }
+        data = {'refresh_token': self.refresh_token}
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/logout', verify=False, headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -57,6 +63,8 @@ class Connection:
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
+            else:
+                return response.status_code
 
 class Pools:
     def __init__(self, url: str, access_token: dict):

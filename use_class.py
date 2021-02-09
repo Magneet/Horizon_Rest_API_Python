@@ -31,17 +31,18 @@ obj = vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionob
 
 settings=vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
 results = settings.get_ic_domain_accounts()
-for i in results:
-    if i["username"] == "m_wouter":
-        id=i["id"]
+# for i in results:
+#     if i["username"] == "m_wouter":
+#         id=i["id"]
 
 
-result=settings.update_ic_domain_account(id=id, password=pw)
-print(result)
+# result=settings.update_ic_domain_account(id=id, password=pw)
+# print(result)
 
 # print(settings.get_ic_domain_accounts())
 #print(results)
-hvconnectionobj.hv_disconnect()
+end=hvconnectionobj.hv_disconnect()
+print(end)
 
 #id = result[0]["id"]
 #print(id)

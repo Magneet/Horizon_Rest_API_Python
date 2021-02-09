@@ -16,6 +16,7 @@
 09-02-2021
 * Changed Error handling from returning a value to raising an error for most modules
 * found error in disconnect
+    * fixed the error in disconnecting
 * Config Class
     * rename list_virtual_centers to get_virtual_centers
     * Made the update_settings_general work properly
