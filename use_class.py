@@ -15,14 +15,13 @@ hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,
 hvconnectionobj.hv_connect()
 print(hvconnectionobj)
 obj = vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-#print(obj.get_settings_general())
+print(obj.get_settings_security())
 
-# changes = {}
-# changes["forced_logoff_message"] = "This computer will selfdestruct in no-time"
-# changes["restricted_client_message"] = "Please use a proper client"
-# #print(changes)
-# result = obj.update_settings_general(settings=changes)
-# print(result)
+changes = {}
+changes["re_auth_secure_tunnel_after_interruption"] = True
+print(changes)
+result = obj.update_settings_security(settings=changes)
+print(result)
 #print(obj.get_settings_general())
 
 

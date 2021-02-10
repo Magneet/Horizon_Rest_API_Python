@@ -73,15 +73,12 @@ class Pools:
         self.access_token = access_token
 
 
-    def list_hvpools(self) -> list:
+    def get_hvpools(self) -> list:
         """Returns a list of dictionaries with all available Desktop Pools. 
 
         Available for Horizon 7.12 and later."""
         response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools', verify=False,  headers=self.access_token)
-        if response.status_code == 400:
-            error_message = (response.json())["error_message"]
-            raise Exception(f"Error {response.status_code}: {error_message}")
-        elif response.status_code != 200:
+        if response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
@@ -465,6 +462,8 @@ class Config:
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -481,16 +480,20 @@ class Config:
         Requires id of an Instant CLone Domain account
         Available for Horizon 7.11 and later."""
         response = requests.delete(f'{self.url}/rest/config/v1/ic-domain-accounts/{id}', verify=False,  headers=self.access_token)
-        try:
-            response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            if response.status_code == 400:
-                response = response.json()
-                return "Error: " + str(e) + ", " + response['error_message']
-            else:
-                return "Error: " + str(e)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
-            return response.json()
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
 
     def get_virtual_centers(self) -> list:
         """Lists Virtual Centers configured in the environment.
@@ -601,14 +604,110 @@ class Config:
         json_data = json.dumps(config)
         response = requests.put(f'{self.url}/rest/config/v1/settings/general', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
-            raise Exception(f"Error {response.status_code}: {response.error_message}")
-        elif response.status_code != 200:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_settings_feature(self,settings: dict):
+        """Updates the feature settings.
+
+        Requires a dictionary with updated settings.
+        Available settings can be retreived using get_settings_feature()
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        config = self.get_settings_feature()
+        for key, value in settings.items():
+            if key in config:
+                config[key] = value
+            else:
+                error_key = key
+                raise Exception(f"{error_key} is not a valid setting")
+
+        json_data = json.dumps(config)
+        response = requests.put(f'{self.url}/rest/config/v1/settings/feature', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_settings_security(self,settings: dict):
+        """Updates the security settings.
+
+        Requires a dictionary with updated settings.
+        Available settings can be retreived using get_settings_security()
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        config = self.get_settings_security()
+        for key, value in settings.items():
+            if key in config:
+                config[key] = value
+            else:
+                error_key = key
+                raise Exception(f"{error_key} is not a valid setting")
+
+        json_data = json.dumps(config)
+        response = requests.put(f'{self.url}/rest/config/v1/settings/security', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status
+
+    def update_settings(self,settings: dict):
+        """Updates the settings.
+
+        Requires a dictionary with updated settings.
+        Available settings can be retreived using get_settings()
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        config = self.get_settings()
+        for key, value in settings.items():
+            if key in config:
+                config[key] = value
+            else:
+                error_key = key
+                raise Exception(f"{error_key} is not a valid setting")
+
+        json_data = json.dumps(config)
+        response = requests.put(f'{self.url}/rest/config/v1/settings', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status
 
 class External:
     def __init__(self, url: str, access_token: dict):
@@ -622,6 +721,30 @@ class External:
         Available for Horizon 7.11 and later."""
         response = requests.get(f'{self.url}/rest/external/v1/ad-domains', verify=False,  headers=self.access_token)
         if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_base_vms(self, vcenter_id, datacenter_id="") -> list:
+        """Lists all the VMs from a vCenter or a datacenter in that vCenter which may be suitable as snapshots for instant/linked clone desktop or farm creation.
+
+        Requires dicht with vcenter_id, optionally datacenter id and since Horizon 2012 filter_incompatible_vms was added (defaults to false)
+        Available for Horizon 7.12 and later."""
+        ## Work in progress!
+        data = {}
+        data['vcenter_id'] = vcenter_id
+        if datacenter_id != "":
+            data['datacenter_id'] = datacenter_id
+        json_data = data.json()
+        response = requests.get(f'{self.url}/rest/external/v1/base-vms', verify=False,  headers=self.access_token, data = json_data)
+        if response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
