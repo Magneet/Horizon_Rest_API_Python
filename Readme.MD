@@ -28,4 +28,4 @@ cs = obj.connection_servers()
 
 ## Changelog
 
-[hangelog.md](changelog.ms)
+[Changelog.md](changelog.ms)
