@@ -13,23 +13,26 @@ pw = getpass.getpass()
 
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
-print(hvconnectionobj)
-obj = vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-print(obj.get_settings_security())
+#print(hvconnectionobj)
+obj = vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+monitor = vmware_horizon.Monitor(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+vc = (monitor.virtual_centers())[0]
+print(vc['id'])
+dc = obj.get_datacenters(vcenter_id = vc["id"])[0]
+hoc = obj.get_hosts_or_clusters(vcenter_id = vc["id"], datacenter_id=dc["id"])
+print(hoc)
 
-changes = {}
-changes["re_auth_secure_tunnel_after_interruption"] = True
-print(changes)
-result = obj.update_settings_security(settings=changes)
-print(result)
+
+# print(dc)
+
 #print(obj.get_settings_general())
 
 
 
 
 
-settings=vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-results = settings.get_ic_domain_accounts()
+# settings=vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+# results = settings.get_ic_domain_accounts()
 # for i in results:
 #     if i["username"] == "m_wouter":
 #         id=i["id"]

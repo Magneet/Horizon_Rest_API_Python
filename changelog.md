@@ -33,3 +33,9 @@
     * Renamed list_hvpools to get_hvpools
     * Started work on get_base_vms
         * work in progress!!
+
+11-02-2021
+* External Class
+    * Got get_base_vms working
+    * Added get_datacenters
+    * Added get_hosts_or_clusters

@@ -720,7 +720,10 @@ class External:
 
         Available for Horizon 7.11 and later."""
         response = requests.get(f'{self.url}/rest/external/v1/ad-domains', verify=False,  headers=self.access_token)
-        if response.status_code != 200:
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
@@ -730,19 +733,21 @@ class External:
             else:
                 return response.json()
 
-    def get_base_vms(self, vcenter_id, datacenter_id="") -> list:
+    def get_base_vms(self, vcenter_id : str,filter_incompatible_vms: bool="", datacenter_id:str="" ) -> list:
         """Lists all the VMs from a vCenter or a datacenter in that vCenter which may be suitable as snapshots for instant/linked clone desktop or farm creation.
 
-        Requires dicht with vcenter_id, optionally datacenter id and since Horizon 2012 filter_incompatible_vms was added (defaults to false)
-        Available for Horizon 7.12 and later."""
-        ## Work in progress!
-        data = {}
-        data['vcenter_id'] = vcenter_id
-        if datacenter_id != "":
-            data['datacenter_id'] = datacenter_id
-        json_data = data.json()
-        response = requests.get(f'{self.url}/rest/external/v1/base-vms', verify=False,  headers=self.access_token, data = json_data)
-        if response.status_code == 404:
+        Requires vcenter_id, optionally datacenter id and since Horizon 2012 filter_incompatible_vms was added (defaults to false)
+        Available for Horizon 7.12 and later and Horizon 8 2012 for filter_incompatible_vms."""
+
+        try:
+            response = requests.get(f'{self.url}/rest/external/v1/base-vms?datacenter_id={datacenter_id}&filter_incompatible_vms={filter_incompatible_vms}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        except:
+            response = requests.get(f'{self.url}/rest/external/v1/base-vms?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
@@ -753,3 +758,49 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def get_datacenters(self, vcenter_id: str) -> list:
+        """Lists all the datacenters of a vCenter.
+
+        Requires vcenter_id
+        Available for Horizon 7.12 and later."""
+
+        response = requests.get(f'{self.url}/rest/external/v1/datacenters?vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_hosts_or_clusters(self, vcenter_id : str, datacenter_id:str="" ) -> list:
+        """Lists all the hosts or clusters of the datacenter.
+
+        Requires vcenter_id and datacenter id
+        Available for Horizon 7.12 and later."""
+
+        response = requests.get(f'{self.url}/rest/external/v1/hosts-or-clusters?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
