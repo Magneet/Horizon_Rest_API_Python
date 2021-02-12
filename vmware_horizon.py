@@ -66,19 +66,141 @@ class Connection:
             else:
                 return response.status_code
 
-class Pools:
+class Inventory:
     def __init__(self, url: str, access_token: dict):
         """Default object for the pools class where all Desktop Pool Actions will be performed."""
         self.url = url
         self.access_token = access_token
 
 
-    def get_hvpools(self) -> list:
+    def get_desktop_pools(self) -> list:
         """Returns a list of dictionaries with all available Desktop Pools. 
 
         Available for Horizon 7.12 and later."""
         response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools', verify=False,  headers=self.access_token)
-        if response.status_code != 200:
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pool(self, id: str) -> dict:
+        """Gets the Desktop Pool information.
+
+        Requires id of a desktop pool
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools/{id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_farms(self) -> list:
+        """Lists the Farms in the environment.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/farms', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_farm(self, id:str) -> dict:
+        """Gets the Farm information.
+
+        Requires id of a RDS Farm
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/farms/{id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_machine(self, id:str) -> dict:
+        """Gets the Machine information.
+
+        Requires id of a machine
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/machines/{id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_machines(self) -> list:
+        """Lists the Machines in the environment.
+
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/machines', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_sessions(self, maxpagesize:int=100, resultcount:int=1000) -> list:
+        """Lists the Session information in the environment.
+
+        Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
+        Available for Horizon 8 2006 and later."""
+        # needs embedded function for the api call for error handling
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
@@ -786,9 +908,7 @@ class External:
 
         Requires vcenter_id and datacenter id
         Available for Horizon 7.12 and later."""
-
         response = requests.get(f'{self.url}/rest/external/v1/hosts-or-clusters?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
-
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -804,3 +924,23 @@ class External:
             else:
                 return response.json()
 
+    def get_vm_templates(self, vcenter_id : str, datacenter_id:str="" ) -> list:
+        """Lists all the VM templates from a vCenter or a datacenter for the given vCenter which may be suitable for full clone desktop pool creation.
+
+        Requires vcenter_id and datacenter id
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/external/v1/vm-templates?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()

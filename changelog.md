@@ -39,3 +39,16 @@
     * Got get_base_vms working
     * Added get_datacenters
     * Added get_hosts_or_clusters
+
+12-02-2021
+* renamed Pools class to Inventory
+* External Class
+    * added get_vm_templates
+* Inventory class
+    * Renamed get_hvpools to get_desktop_pools
+    * Added get_desktop_pool
+    * Added get_farms
+    * Added get_farm
+    * Added get_machine
+    * Added get_machines
+    * started work on get_sessions
