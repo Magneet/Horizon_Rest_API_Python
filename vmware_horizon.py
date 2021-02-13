@@ -1,4 +1,4 @@
-import json, requests, ssl
+import json, requests, ssl, urllib
 from typing import get_args
 
 class Connection:
@@ -166,40 +166,85 @@ class Inventory:
             else:
                 return response.json()
 
-    def get_machines(self) -> list:
+    def get_machines(self, maxpagesize:int=100, filter:dict="") -> list:
         """Lists the Machines in the environment.
 
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later."""
-        response = requests.get(f'{self.url}/rest/inventory/v1/machines', verify=False,  headers=self.access_token)
-        if response.status_code == 400:
-            error_message = (response.json())["error_message"]
-            raise Exception(f"Error {response.status_code}: {error_message}")
-        elif response.status_code != 200:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
-        else:
-            try:
-                response.raise_for_status()
-            except requests.exceptions.RequestException as e:
-                raise "Error: " + str(e)
-            else:
-                return response.json()
 
-    def get_sessions(self, maxpagesize:int=100, resultcount:int=1000) -> list:
+        def int_get_machines(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+            else:
+                add_filter = ""
+            print(add_filter)
+            response = requests.get(f'{self.url}/rest/inventory/v1/machines{add_filter}?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_machines(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_machines(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+
+    def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
 
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
         Available for Horizon 8 2006 and later."""
-        # needs embedded function for the api call for error handling
+
+        def int_get_sessions(self, page:int, maxpagesize: int) ->list:
+            response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
         if maxpagesize > 1000:
             maxpagesize = 1000
         page = 1
-        response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+        response = int_get_sessions(self,page = page, maxpagesize= maxpagesize)
+        results = response.json()
         while 'HAS_MORE_RECORDS' in response.headers:
             page += 1
-            response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            response = int_get_sessions(self,page = page, maxpagesize= maxpagesize)
+            results += response.json()
+        return results
+
+    def get_session(self, id: str) -> dict:
+        """Gets the Session information.
+
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/sessions/{id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:

@@ -52,3 +52,9 @@
     * Added get_machine
     * Added get_machines
     * started work on get_sessions
+
+13-02-2021
+* Inventory Class
+    * finalized get_sessions
+    * added get_session
+    * update get_machines with pagination and filtering

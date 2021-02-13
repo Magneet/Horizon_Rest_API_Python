@@ -162,12 +162,36 @@ Classes
     `get_farm(self, id: str) ‑> dict`
     :   Gets the Farm information.
         
+        Requires id of a RDS Farm
         Available for Horizon 7.12 and later.
 
     `get_farms(self) ‑> list`
     :   Lists the Farms in the environment.
         
         Available for Horizon 7.12 and later.
+
+    `get_machine(self, id: str) ‑> dict`
+    :   Gets the Machine information.
+        
+        Requires id of a machine
+        Available for Horizon 7.12 and later.
+
+    `get_machines(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the Machines in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later.
+
+    `get_session(self, id: str) ‑> dict`
+    :   Gets the Session information.
+        
+        Available for Horizon 8 2006 and later.
+
+    `get_sessions(self, maxpagesize: int = 100) ‑> list`
+    :   Lists the Session information in the environment.
+        
+        Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
+        Available for Horizon 8 2006 and later.
 
 `Monitor(url: str, access_token: dict)`
 :   Default object for the monitor class used for the monitoring of the various VMware Horiozn services.
