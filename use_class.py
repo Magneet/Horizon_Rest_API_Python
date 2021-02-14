@@ -36,7 +36,8 @@ deleteids = []
 for i in machines:
     print(i["name"])
     deleteids.append(i["id"])
-obj.delete_machines(ids=deleteids, delete_from_multiple_pools=True,force_logoff=True,delete_from_disk=True)
+id = deleteids[0]
+obj.delete_machine(id=id, delete_from_multiple_pools=True,force_logoff=True,delete_from_disk=True)
 
 
 # print(dc)
