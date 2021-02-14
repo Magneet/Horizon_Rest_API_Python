@@ -203,6 +203,24 @@ class Inventory:
             results += response.json()
         return results
 
+    def delete_machines(self, id:str) -> dict:
+        """Gets the Machine information.
+
+        Requires id of a machine
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/machines/{id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
     def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
