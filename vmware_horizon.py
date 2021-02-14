@@ -178,7 +178,6 @@ class Inventory:
                 add_filter = f"?filter={filter_url}"
             else:
                 add_filter = ""
-            print(add_filter)
             response = requests.get(f'{self.url}/rest/inventory/v1/machines{add_filter}?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
             if response.status_code == 400:
                 error_message = (response.json())["error_message"]
@@ -203,6 +202,64 @@ class Inventory:
             results += response.json()
         return results
 
+    def delete_machine(self, id:str, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+        """Deletes a machine.
+
+        Requires id of the machine to delete machine
+        Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data={}
+        data["allow_delete_from_multi_desktop_pools"] = delete_from_multiple_pools
+        data["archive_persistent_disk"] = False
+        data["delete_from_disk"] = delete_from_disk
+        data["force_logoff_session"] = force_logoff
+        json_data = json.dumps(data)
+        response = requests.delete(f'{self.url}/rest/inventory/v1/machines/{id}', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def delete_machines(self, ids:list, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+        """deletes the specified machines
+
+        Requires list of ids of the machines to remove 
+        Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data={}
+        machine_delete_data={}
+        machine_delete_data["allow_delete_from_multi_desktop_pools"] = delete_from_multiple_pools
+        machine_delete_data["archive_persistent_disk"] = False
+        machine_delete_data["delete_from_disk"] = delete_from_disk
+        machine_delete_data["force_logoff_session"] = force_logoff
+        data["machine_delete_data"] = machine_delete_data
+        data["machine_ids"] = ids
+        json_data = json.dumps(data)
+        response = requests.delete(f'{self.url}/rest/inventory/v1/machines', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
     def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.

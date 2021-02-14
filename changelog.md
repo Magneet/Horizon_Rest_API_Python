@@ -58,3 +58,10 @@
     * finalized get_sessions
     * added get_session
     * update get_machines with pagination and filtering
+
+14-02-2021
+* Added Dev branch
+* Inventory Class
+    * Added delete_machines
+    * removed print that was left behind in get_machines
+    * Added delete_machine
