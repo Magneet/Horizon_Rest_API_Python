@@ -3,8 +3,8 @@ import vmware_horizon
 
 requests.packages.urllib3.disable_warnings()
 #url = input("URL\n")
-#url="https://loftcbr01.loft.lab"
-url="https://pod2cbr1.loft.lab"
+url="https://loftcbr01.loft.lab"
+#url="https://pod2cbr1.loft.lab"
 #username = input("Username\n")
 username = "m_wouter"
 #domain = input("Domain\n")
@@ -25,20 +25,18 @@ filter["filters"] = []
 filter1={}
 filter1["type"] = "Contains"
 filter1["name"] = "name"
-filter1["value"] = "Pod02"
-print(filter1)
+filter1["value"] = "LP-00"
+
 filter["filters"].append(filter1)
-print(filter)
-tmp = json.dumps(filter,separators=(', ', ':'))
-print(tmp)
-filter_url = urllib.parse.quote(tmp)
-print(filter_url)
+
 # bla = urllib.parse.urlencode(filter)
 # print(bla)
 machines = obj.get_machines(maxpagesize=1, filter = filter)
+deleteids = []
 for i in machines:
-    print(i)
-
+    print(i["name"])
+    deleteids.append(i["id"])
+obj.delete_machines(ids=deleteids, delete_from_multiple_pools=True,force_logoff=True,delete_from_disk=True)
 
 
 # print(dc)
