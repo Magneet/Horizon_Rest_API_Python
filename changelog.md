@@ -44,6 +44,7 @@
 * renamed Pools class to Inventory
 * External Class
     * added get_vm_templates
+
 * Inventory class
     * Renamed get_hvpools to get_desktop_pools
     * Added get_desktop_pool
@@ -65,3 +66,13 @@
     * Added delete_machines
     * removed print that was left behind in get_machines
     * Added delete_machine
+
+16-02-2021
+* Inventory Class
+    * Added Machines_enter_maintenance_mode
+    * Added Machines_exit_maintenance_mode
+    * Added Machines_rebuild
+    * Added Machines_reset
+    * Added Machines_restart
+    * Added Machines_recover
+    * started work on get_ad_users_or_groups

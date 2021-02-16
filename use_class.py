@@ -17,28 +17,32 @@ hvconnectionobj.hv_connect()
 # #print(hvconnectionobj)
 # obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
 obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+obj2=vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
 # sessions = obj.get_sessions(maxpagesize=1)
 #print(obj.rds_servers())
-filter = {}
-filter["type"] = "And"
-filter["filters"] = []
-filter1={}
-filter1["type"] = "Contains"
-filter1["name"] = "name"
-filter1["value"] = "LP-00"
+# filter = {}
+# filter["type"] = "And"
+# filter["filters"] = []
+# filter1={}
+# filter1["type"] = "Contains"
+# filter1["name"] = "name"
+# filter1["value"] = "LP-00"
 
-filter["filters"].append(filter1)
+# filter["filters"].append(filter1)
 
-# bla = urllib.parse.urlencode(filter)
-# print(bla)
-machines = obj.get_machines(maxpagesize=1, filter = filter)
-deleteids = []
-for i in machines:
-    print(i["name"])
-    deleteids.append(i["id"])
-id = deleteids[0]
-obj.delete_machine(id=id, delete_from_multiple_pools=True,force_logoff=True,delete_from_disk=True)
-
+# # bla = urllib.parse.urlencode(filter)
+# # print(bla)
+# machines = obj.get_machines(maxpagesize=1, filter = filter)
+# deleteids = []
+# for i in machines:
+#     print(i["name"])
+#     deleteids.append(i["id"])
+# id = deleteids[0]
+# result = obj.machines_restart(deleteids)
+# print(result)
+results = obj2.get_ad_users_or_groups(maxpagesize=10)
+for i in results:
+    print(i["group"])
 
 # print(dc)
 
