@@ -76,3 +76,8 @@
     * Added Machines_restart
     * Added Machines_recover
     * started work on get_ad_users_or_groups
+
+18-02-2021
+* Inventory Class
+    * finalized get_ad_users_or_groups
+    * added get_ad_user_or_group
