@@ -119,6 +119,12 @@ Classes
         
         Available for Horizon 7.11 and later.
 
+    `get_ad_users_or_group(self, id) ‑> dict`
+    :   Get information related to AD User or Group.
+        
+        Requires id of the user object
+        Available for Horizon 7.12 and later.
+
     `get_ad_users_or_groups(self, maxpagesize: int = 100, filter: dict = '', group_only: bool = '') ‑> list`
     :   Lists AD users or groups information
         

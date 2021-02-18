@@ -1,10 +1,12 @@
-import requests, getpass, urllib, json
+import requests, getpass, urllib, json, operator
 import vmware_horizon
 
 requests.packages.urllib3.disable_warnings()
 #url = input("URL\n")
 url="https://loftcbr01.loft.lab"
 #url="https://pod2cbr1.loft.lab"
+#url="https://pod1cbr1.loft.lab"
+#url="https://lofttst01.loft.lab"
 #username = input("Username\n")
 username = "m_wouter"
 #domain = input("Domain\n")
@@ -14,25 +16,26 @@ pw = getpass.getpass()
 
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
+print("connected")
 # #print(hvconnectionobj)
 # obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+#obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
 obj2=vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
 # sessions = obj.get_sessions(maxpagesize=1)
 #print(obj.rds_servers())
-# filter = {}
-# filter["type"] = "And"
-# filter["filters"] = []
-# filter1={}
-# filter1["type"] = "Contains"
-# filter1["name"] = "name"
-# filter1["value"] = "LP-00"
+filter = {}
+filter["type"] = "And"
+filter["filters"] = []
+filter1={}
+filter1["type"] = "Contains"
+filter1["name"] = "name"
+filter1["value"] = "user"
 
-# filter["filters"].append(filter1)
+filter["filters"].append(filter1)
 
-# # bla = urllib.parse.urlencode(filter)
-# # print(bla)
-# machines = obj.get_machines(maxpagesize=1, filter = filter)
+# bla = urllib.parse.urlencode(filter)
+# print(bla)
+# machines = obj.get_machines(maxpagesize=2)
 # deleteids = []
 # for i in machines:
 #     print(i["name"])
@@ -40,15 +43,22 @@ obj2=vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectiono
 # id = deleteids[0]
 # result = obj.machines_restart(deleteids)
 # print(result)
-results = obj2.get_ad_users_or_groups(maxpagesize=10)
-for i in results:
-    print(i["group"])
+#objects = obj2.get_ad_users_or_groups(maxpagesize=5)
+#objects = obj2.get_ad_users_or_groups(maxpagesize=5 ,group_only=False)
+objects = obj2.get_ad_users_or_groups(maxpagesize=100, filter=filter, group_only=False )
 
-# print(dc)
+# print(objects[3]["id"])
+
+# user = obj2.get_ad_users_or_group(id=objects[3]["id"])
+# print(user)
 
 #print(obj.get_settings_general())
 
-
+for i in objects:
+    or_name = i["name"]
+    print(f"or user = {or_name}")
+    user = obj2.get_ad_users_or_group(id=i["id"])
+    print(user["name"])
 
 
 
