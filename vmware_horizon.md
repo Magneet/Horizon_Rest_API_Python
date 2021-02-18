@@ -119,6 +119,19 @@ Classes
         
         Available for Horizon 7.11 and later.
 
+    `get_ad_users_or_group(self, id) ‑> dict`
+    :   Get information related to AD User or Group.
+        
+        Requires id of the user object
+        Available for Horizon 7.12 and later.
+
+    `get_ad_users_or_groups(self, maxpagesize: int = 100, filter: dict = '', group_only: bool = '') ‑> list`
+    :   Lists AD users or groups information
+        
+        If group_only is passed as True only groups are returned, if users_only is passed as False only users are returned. If both are passed a True an error will be raised.
+        Supports pagination and filtering
+        Available for Horizon 7.12 and later.
+
     `get_base_vms(self, vcenter_id: str, filter_incompatible_vms: bool = '', datacenter_id: str = '') ‑> list`
     :   Lists all the VMs from a vCenter or a datacenter in that vCenter which may be suitable as snapshots for instant/linked clone desktop or farm creation.
         
@@ -147,6 +160,20 @@ Classes
 :   Default object for the pools class where all Desktop Pool Actions will be performed.
 
     ### Methods
+
+    `delete_machine(self, id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
+    :   Deletes a machine.
+        
+        Requires id of the machine to delete machine
+        Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
+        Available for Horizon 7.12 and later.
+
+    `delete_machines(self, ids: list, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
+    :   deletes the specified machines
+        
+        Requires list of ids of the machines to remove 
+        Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
+        Available for Horizon 8 2006 and later.
 
     `get_desktop_pool(self, id: str) ‑> dict`
     :   Gets the Desktop Pool information.
@@ -191,6 +218,42 @@ Classes
     :   Lists the Session information in the environment.
         
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
+        Available for Horizon 8 2006 and later.
+
+    `machines_enable_maintenance_mode(self, ids: list)`
+    :   Puts a machine in maintenance mode.
+        
+        Requires a List of Machine Ids representing the machines to be put into maintenance mode.
+        Available for Horizon 8 2006 and later.
+
+    `machines_exit_maintenance_mode(self, ids: list)`
+    :   Takes a machine out of maintenance mode.
+        
+        Requires a List of Machine Ids representing the machines to be taken out of maintenance mode.
+        Available for Horizon 8 2006 and later.
+
+    `machines_rebuild(self, ids: list)`
+    :   Rebuilds the specified machines.
+        
+        Requires a List of Machine Ids representing the machines to be rebuild.
+        Available for Horizon 8 2006 and later.
+
+    `machines_recover(self, ids: list)`
+    :   Recovers the specified machines.
+        
+        Requires a List of Machine Ids representing the machines to be recovered.
+        Available for Horizon 8 2006 and later.
+
+    `machines_reset(self, ids: list)`
+    :   Resets the specified machines.
+        
+        Requires a List of Machine Ids representing the machines to be reset.
+        Available for Horizon 8 2006 and later.
+
+    `machines_restart(self, ids: list)`
+    :   Restarts the specified machines.
+        
+        Requires a List of Machine Ids representing the machines to be restarted.
         Available for Horizon 8 2006 and later.
 
 `Monitor(url: str, access_token: dict)`

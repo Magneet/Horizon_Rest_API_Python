@@ -261,6 +261,126 @@ class Inventory:
             else:
                 return response.json()
 
+    def machines_enable_maintenance_mode(self, ids:list):
+        """Puts a machine in maintenance mode.
+
+        Requires a List of Machine Ids representing the machines to be put into maintenance mode.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/enter-maintenance', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def machines_exit_maintenance_mode(self, ids:list):
+        """Takes a machine out of maintenance mode.
+
+        Requires a List of Machine Ids representing the machines to be taken out of maintenance mode.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/exit-maintenance', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def machines_rebuild(self, ids:list):
+        """Rebuilds the specified machines.
+
+        Requires a List of Machine Ids representing the machines to be rebuild.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/rebuild', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def machines_recover(self, ids:list):
+        """Recovers the specified machines.
+
+        Requires a List of Machine Ids representing the machines to be recovered.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/recover', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def machines_reset(self, ids:list):
+        """Resets the specified machines.
+
+        Requires a List of Machine Ids representing the machines to be reset.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/reset', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def machines_restart(self, ids:list):
+        """Restarts the specified machines.
+
+        Requires a List of Machine Ids representing the machines to be restarted.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/restart', verify=False,  headers=self.access_token, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
     def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
 
@@ -963,9 +1083,9 @@ class External:
         Requires vcenter_id, optionally datacenter id and since Horizon 2012 filter_incompatible_vms was added (defaults to false)
         Available for Horizon 7.12 and later and Horizon 8 2012 for filter_incompatible_vms."""
 
-        try:
+        if filter_incompatible_vms == True or filter_incompatible_vms == False:
             response = requests.get(f'{self.url}/rest/external/v1/base-vms?datacenter_id={datacenter_id}&filter_incompatible_vms={filter_incompatible_vms}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
-        except:
+        else:
             response = requests.get(f'{self.url}/rest/external/v1/base-vms?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
 
         if response.status_code == 400:
@@ -1032,6 +1152,72 @@ class External:
         Requires vcenter_id and datacenter id
         Available for Horizon 7.12 and later."""
         response = requests.get(f'{self.url}/rest/external/v1/vm-templates?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_ad_users_or_groups(self, maxpagesize:int=100, filter:dict="", group_only:bool = "") -> list:
+        """Lists AD users or groups information
+
+        If group_only is passed as True only groups are returned, if users_only is passed as False only users are returned. If both are passed a True an error will be raised.
+        Supports pagination and filtering
+        Available for Horizon 7.12 and later."""
+        def int_get_ad_users_or_groups(self, page:int, maxpagesize: int, filter:list="", group_only: bool="") ->list:
+            if filter != "" and (group_only == True or group_only == False):
+                print("1")
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                url_filter = f"?filter={filter_url}&group_only={group_only}&page={page}&size={maxpagesize}"
+            elif filter == "" and (group_only == True or group_only == False):
+                print("2")
+                url_filter = f"?group_only={group_only}&page={page}&size={maxpagesize}"
+            elif filter != "" and not (group_only == True or group_only == False):
+                print("3")
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                url_filter = f"?filter={filter_url}&page={page}&size={maxpagesize}"
+            else:
+                print("4")
+                url_filter = f"?page={page}&size={maxpagesize}"
+            response = requests.get(f'{self.url}/rest/external/v1/ad-users-or-groups{url_filter}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_ad_users_or_groups(self,page = page, maxpagesize= maxpagesize,filter = filter, group_only = group_only)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_ad_users_or_groups(self,page = page, maxpagesize= maxpagesize,filter = filter, group_only = group_only)
+            results += response.json()
+        return results
+
+    def get_ad_users_or_group(self, id) -> dict:
+        """Get information related to AD User or Group.
+
+        Requires id of the user object
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/external/v1/ad-users-or-groups/{id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
