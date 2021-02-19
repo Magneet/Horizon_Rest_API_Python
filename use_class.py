@@ -17,63 +17,32 @@ pw = getpass.getpass()
 hvconnectionobj = vmware_horizon.Connection(username = username,domain = domain,password = pw,url = url)
 hvconnectionobj.hv_connect()
 print("connected")
-# #print(hvconnectionobj)
-# obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-#obj = vmware_horizon.Inventory(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-obj2=vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+monitor = obj=vmware_horizon.Monitor(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+obj=vmware_horizon.External(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
+vcenters = monitor.virtual_centers()
+vcid = vcenters[0]["id"]
+print(vcid)
+hoc = obj.get_hosts_or_clusters(vcenter_id=vcid, datacenter_id="datacenter-2")
+print(hoc)
+
+#base_vm = list(filter (lambda name : name["name"] == "W10-L-2021-02-01-14-18", basevms))
+ds = obj.get_datastore_paths(vcenter_id=vcid,datastore_id="datastore-5681")
+print(ds)
+
+
 # sessions = obj.get_sessions(maxpagesize=1)
 #print(obj.rds_servers())
-filter = {}
-filter["type"] = "And"
-filter["filters"] = []
-filter1={}
-filter1["type"] = "Contains"
-filter1["name"] = "name"
-filter1["value"] = "user"
+# filter = {}
+# filter["type"] = "And"
+# filter["filters"] = []
+# filter1={}
+# filter1["type"] = "Contains"
+# filter1["name"] = "name"
+# filter1["value"] = "user"
 
-filter["filters"].append(filter1)
-
-# bla = urllib.parse.urlencode(filter)
-# print(bla)
-# machines = obj.get_machines(maxpagesize=2)
-# deleteids = []
-# for i in machines:
-#     print(i["name"])
-#     deleteids.append(i["id"])
-# id = deleteids[0]
-# result = obj.machines_restart(deleteids)
-# print(result)
-#objects = obj2.get_ad_users_or_groups(maxpagesize=5)
-#objects = obj2.get_ad_users_or_groups(maxpagesize=5 ,group_only=False)
-objects = obj2.get_ad_users_or_groups(maxpagesize=100, filter=filter, group_only=False )
-
-# print(objects[3]["id"])
-
-# user = obj2.get_ad_users_or_group(id=objects[3]["id"])
-# print(user)
-
-#print(obj.get_settings_general())
-
-for i in objects:
-    or_name = i["name"]
-    print(f"or user = {or_name}")
-    user = obj2.get_ad_users_or_group(id=i["id"])
-    print(user["name"])
+# filter["filters"].append(filter1)
 
 
-
-# settings=vmware_horizon.Config(url=hvconnectionobj.url, access_token=hvconnectionobj.access_token)
-# results = settings.get_ic_domain_accounts()
-# for i in results:
-#     if i["username"] == "m_wouter":
-#         id=i["id"]
-
-
-# result=settings.update_ic_domain_account(id=id, password=pw)
-# print(result)
-
-# print(settings.get_ic_domain_accounts())
-#print(results)
 end=hvconnectionobj.hv_disconnect()
 print(end)
 
