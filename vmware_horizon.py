@@ -1323,3 +1323,74 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def get_network_labels(self, vcenter_id : str, host_or_cluster_id:str, network_type:str = "" ) -> list:
+        """Retrieves all network labels on the given host or cluster.
+
+        Requires host_or_cluster_id, vcenter_id and optionally a network type.
+        Valid options for network_type are: NETWORK, OPAQUE_NETWORK, DISTRUBUTED_VIRTUAL_PORT_GROUP
+        Available for Horizon 8 2006 and later."""
+        if network_type == "":
+            response = requests.get(f'{self.url}/rest/external/v1/network-labels?host_or_cluster_id={host_or_cluster_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        elif network_type == "NETWORK" or network_type == "OPAQUE_NETWORK" or network_type == "DISTRUBUTED_VIRTUAL_PORT_GROUP":
+            response = requests.get(f'{self.url}/rest/external/v1/network-labels?host_or_cluster_id={host_or_cluster_id}&network_type={network_type}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        else:
+            raise(f"{network_type} is not a valid network type try NETWORK, OPAQUE_NETWORK or DISTRUBUTED_VIRTUAL_PORT_GROUP")
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_resource_pools(self, vcenter_id : str, host_or_cluster_id:str) -> list:
+        """Lists all the resource pools from the vCenter for the given host or cluster.
+
+        Requires host_or_cluster_id and vcenter_id.
+        Available for Horizon 8 2006 and later."""
+
+        response = requests.get(f'{self.url}/rest/external/v1/resource-pools?host_or_cluster_id={host_or_cluster_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_vm_folders(self, vcenter_id : str, datacenter_id:str) -> list:
+        """Lists all the VM folders from the vCenter for the given datacenter.
+
+        Requires datacenter_id and vcenter_id.
+        Available for Horizon 8 2006 and later."""
+
+        response = requests.get(f'{self.url}/rest/external/v1/vm-folders?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
