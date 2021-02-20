@@ -81,3 +81,18 @@
 * Inventory Class
     * finalized get_ad_users_or_groups
     * added get_ad_user_or_group
+
+19-02-2021
+* Inventory Class
+    * Applied fix for get_base_vms (issues when datacenter_id was not used)
+    * Fixed get_hosts_or_clusters (made the datacenter_id required)
+    * Added get_base_snapshots
+    * Added get_customization_specifications
+    * Added get_datastores
+    * Added get_datastore_paths
+
+20-02-2021
+* Inventory class
+    * Added get_network_labels
+    * Added get_resource_pools
+    * Added get_vm_folders

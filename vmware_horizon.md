@@ -132,11 +132,23 @@ Classes
         Supports pagination and filtering
         Available for Horizon 7.12 and later.
 
+    `get_base_snapshots(self, vcenter_id: str, base_vm_id: str) ‑> list`
+    :   Lists all the VM snapshots from the vCenter for a given VM.
+        
+        Requires vcenter_id and base_vm_id
+        Available for Horizon 8 2006.
+
     `get_base_vms(self, vcenter_id: str, filter_incompatible_vms: bool = '', datacenter_id: str = '') ‑> list`
     :   Lists all the VMs from a vCenter or a datacenter in that vCenter which may be suitable as snapshots for instant/linked clone desktop or farm creation.
         
         Requires vcenter_id, optionally datacenter id and since Horizon 2012 filter_incompatible_vms was added (defaults to false)
         Available for Horizon 7.12 and later and Horizon 8 2012 for filter_incompatible_vms.
+
+    `get_customization_specifications(self, vcenter_id: str) ‑> list`
+    :   Lists all the customization specifications from the vCenter.
+        
+        Requires vcenter_id
+        Available for Horizon 8 2006.
 
     `get_datacenters(self, vcenter_id: str) ‑> list`
     :   Lists all the datacenters of a vCenter.
@@ -144,7 +156,19 @@ Classes
         Requires vcenter_id
         Available for Horizon 7.12 and later.
 
-    `get_hosts_or_clusters(self, vcenter_id: str, datacenter_id: str = '') ‑> list`
+    `get_datastore_paths(self, vcenter_id: str, datastore_id: str) ‑> list`
+    :   Lists all the folder paths within a Datastore from vCenter.
+        
+        Requires datastore_id and vcenter_id
+        Available for Horizon 8 2006 and later.
+
+    `get_datastores(self, vcenter_id: str, host_or_cluster_id: str) ‑> list`
+    :   Lists all the datastoress from the vCenter for the given host or cluster.
+        
+        Requires host_or_cluster_id and vcenter_id
+        Available for Horizon 8 2006 and later.
+
+    `get_hosts_or_clusters(self, vcenter_id: str, datacenter_id: str) ‑> list`
     :   Lists all the hosts or clusters of the datacenter.
         
         Requires vcenter_id and datacenter id
