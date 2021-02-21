@@ -102,5 +102,8 @@
 * External Class
     * added get_network_interface_cards
 * Inventory Class
+    * fixed get_machines
+    * Replaced id or ids with better named arguments like machine_id or machine_ids in a lot of methods
     * Renamed delete_machine to machine_delete
     * Renamed delete_machines to machines_delete
+    * Added get_application_pools
