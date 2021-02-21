@@ -75,15 +75,16 @@
     * Added Machines_reset
     * Added Machines_restart
     * Added Machines_recover
+* External Class
     * started work on get_ad_users_or_groups
 
 18-02-2021
-* Inventory Class
+* External Class
     * finalized get_ad_users_or_groups
     * added get_ad_user_or_group
 
 19-02-2021
-* Inventory Class
+* External Class
     * Applied fix for get_base_vms (issues when datacenter_id was not used)
     * Fixed get_hosts_or_clusters (made the datacenter_id required)
     * Added get_base_snapshots
@@ -92,7 +93,14 @@
     * Added get_datastore_paths
 
 20-02-2021
-* Inventory class
+* External class
     * Added get_network_labels
     * Added get_resource_pools
     * Added get_vm_folders
+
+21-02-2021
+* External Class
+    * added get_network_interface_cards
+* Inventory Class
+    * Renamed delete_machine to machine_delete
+    * Renamed delete_machines to machines_delete

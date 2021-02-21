@@ -202,7 +202,7 @@ class Inventory:
             results += response.json()
         return results
 
-    def delete_machine(self, id:str, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+    def machine_delete(self, id:str, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
         """Deletes a machine.
 
         Requires id of the machine to delete machine
@@ -228,7 +228,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def delete_machines(self, ids:list, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+    def machines_delete(self, ids:list, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
         """deletes the specified machines
 
         Requires list of ids of the machines to remove 
@@ -1380,6 +1380,34 @@ class External:
         Available for Horizon 8 2006 and later."""
 
         response = requests.get(f'{self.url}/rest/external/v1/vm-folders?datacenter_id={datacenter_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_network_interface_cards(self, vcenter_id : str, base_snapshot_id:str = "", base_vm_id:str = "",vm_template_id:str = ""  ) -> list:
+        """Returns a list of network interface cards (NICs) suitable for configuration on a desktop pool/farm.
+
+        Requires vcenter_id and either vm_template_id or (base_vm_id and base_snapshot_id).
+        Available for Horizon 8 2006 and later."""
+        if base_snapshot_id != "" and base_vm_id != "" and vm_template_id != "":
+            raise("When VM template is specified, base VM and snapshot cannot be specified.")
+        elif base_snapshot_id != "" and base_vm_id != "" and vm_template_id == "":
+            response = requests.get(f'{self.url}/rest/external/v1/network-interface-cards?base_snapshot_id={base_snapshot_id}&base_vm_id={base_vm_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        elif base_snapshot_id == "" and base_vm_id == "" and vm_template_id != "":
+            response = requests.get(f'{self.url}/rest/external/v1/network-interface-cards?vcenter_id={vcenter_id}&vm_template_id={vm_template_id}', verify=False,  headers=self.access_token)
+        else:
+            raise("Either VM template or (base VM with snapshot) are required for fetching network interface cards.")
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
