@@ -174,6 +174,31 @@ Classes
         Requires vcenter_id and datacenter id
         Available for Horizon 7.12 and later.
 
+    `get_network_interface_cards(self, vcenter_id: str, base_snapshot_id: str = '', base_vm_id: str = '', vm_template_id: str = '') ‑> list`
+    :   Returns a list of network interface cards (NICs) suitable for configuration on a desktop pool/farm.
+        
+        Requires vcenter_id and either vm_template_id or (base_vm_id and base_snapshot_id).
+        Available for Horizon 8 2006 and later.
+
+    `get_network_labels(self, vcenter_id: str, host_or_cluster_id: str, network_type: str = '') ‑> list`
+    :   Retrieves all network labels on the given host or cluster.
+        
+        Requires host_or_cluster_id, vcenter_id and optionally a network type.
+        Valid options for network_type are: NETWORK, OPAQUE_NETWORK, DISTRUBUTED_VIRTUAL_PORT_GROUP
+        Available for Horizon 8 2006 and later.
+
+    `get_resource_pools(self, vcenter_id: str, host_or_cluster_id: str) ‑> list`
+    :   Lists all the resource pools from the vCenter for the given host or cluster.
+        
+        Requires host_or_cluster_id and vcenter_id.
+        Available for Horizon 8 2006 and later.
+
+    `get_vm_folders(self, vcenter_id: str, datacenter_id: str) ‑> list`
+    :   Lists all the VM folders from the vCenter for the given datacenter.
+        
+        Requires datacenter_id and vcenter_id.
+        Available for Horizon 8 2006 and later.
+
     `get_vm_templates(self, vcenter_id: str, datacenter_id: str = '') ‑> list`
     :   Lists all the VM templates from a vCenter or a datacenter for the given vCenter which may be suitable for full clone desktop pool creation.
         
