@@ -202,7 +202,7 @@ class Inventory:
             results += response.json()
         return results
 
-    def machine_delete(self, machine_id:str, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+    def delete_machine(self, machine_id:str, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
         """Deletes a machine.
 
         Requires id of the machine to delete machine
@@ -228,7 +228,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def machines_delete(self, machine_ids:list, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
+    def delete_machines(self, machine_ids:list, delete_from_multiple_pools:bool=False, force_logoff:bool=False, delete_from_disk:bool=False):
         """deletes the specified machines
 
         Requires list of ids of the machines to remove 
@@ -301,7 +301,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def machines_rebuild(self, machine_ids:list):
+    def rebuild_machines(self, machine_ids:list):
         """Rebuilds the specified machines.
 
         Requires a List of Machine Ids representing the machines to be rebuild.
@@ -321,7 +321,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def machines_recover(self, machine_ids:list):
+    def recover_machines(self, machine_ids:list):
         """Recovers the specified machines.
 
         Requires a List of Machine Ids representing the machines to be recovered.
@@ -341,7 +341,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def machines_reset(self, machine_ids:list):
+    def reset_machines(self, machine_ids:list):
         """Resets the specified machines.
 
         Requires a List of Machine Ids representing the machines to be reset.
@@ -361,7 +361,7 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def machines_restart(self, machine_ids:list):
+    def restart_machines(self, machine_ids:list):
         """Restarts the specified machines.
 
         Requires a List of Machine Ids representing the machines to be restarted.
@@ -467,6 +467,105 @@ class Inventory:
             response = int_get_application_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
             results += response.json()
         return results
+
+    def get_application_pool(self, application_pool_id: str) -> dict:
+        """Gets a single Application pool
+
+        Requires Application_pool_id
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_application_pool(self,application_pool_data:dict):
+        """Creates an application pool.
+
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_application_pool(self, application_pool_id:str, application_pool_data:dict):
+        """Updates an application pool.
+
+        The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.put(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_messages"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_application_pool(self,application_pool_id:str):
+        """Deletes an application pool.
+
+        Requires application_pool_id as a str
+        Available for Horizon 8 2006 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
 
 class Monitor:
     def __init__(self, url: str, access_token: dict):

@@ -210,21 +210,39 @@ Classes
 
     ### Methods
 
-    `delete_machine(self, id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
+    `delete_application_pool(self, application_pool_id: str)`
+    :   Deletes an application pool.
+        
+        Requires application_pool_id as a str
+        Available for Horizon 8 2006 and later.
+
+    `delete_machine(self, machine_id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
     :   Deletes a machine.
         
         Requires id of the machine to delete machine
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 7.12 and later.
 
-    `delete_machines(self, ids: list, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
+    `delete_machines(self, machine_ids: list, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
     :   deletes the specified machines
         
         Requires list of ids of the machines to remove 
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 8 2006 and later.
 
-    `get_desktop_pool(self, id: str) ‑> dict`
+    `get_application_pool(self, application_pool_id: str) ‑> dict`
+    :   Gets a single Application pool
+        
+        Requires Application_pool_id
+        Available for Horizon 8 2006 and later.
+
+    `get_application_pools(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the application pools in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later.
+
+    `get_desktop_pool(self, desktop_pool_id: str) ‑> dict`
     :   Gets the Desktop Pool information.
         
         Requires id of a desktop pool
@@ -235,7 +253,7 @@ Classes
         
         Available for Horizon 7.12 and later.
 
-    `get_farm(self, id: str) ‑> dict`
+    `get_farm(self, farm_id: str) ‑> dict`
     :   Gets the Farm information.
         
         Requires id of a RDS Farm
@@ -246,7 +264,7 @@ Classes
         
         Available for Horizon 7.12 and later.
 
-    `get_machine(self, id: str) ‑> dict`
+    `get_machine(self, machine_id: str) ‑> dict`
     :   Gets the Machine information.
         
         Requires id of a machine
@@ -258,7 +276,7 @@ Classes
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later.
 
-    `get_session(self, id: str) ‑> dict`
+    `get_session(self, session_id: str) ‑> dict`
     :   Gets the Session information.
         
         Available for Horizon 8 2006 and later.
@@ -269,40 +287,53 @@ Classes
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
         Available for Horizon 8 2006 and later.
 
-    `machines_enable_maintenance_mode(self, ids: list)`
+    `machines_enable_maintenance_mode(self, machine_ids: list)`
     :   Puts a machine in maintenance mode.
         
         Requires a List of Machine Ids representing the machines to be put into maintenance mode.
         Available for Horizon 8 2006 and later.
 
-    `machines_exit_maintenance_mode(self, ids: list)`
+    `machines_exit_maintenance_mode(self, machine_ids: list)`
     :   Takes a machine out of maintenance mode.
         
         Requires a List of Machine Ids representing the machines to be taken out of maintenance mode.
         Available for Horizon 8 2006 and later.
 
-    `machines_rebuild(self, ids: list)`
+    `new_application_pool(self, application_pool_data: dict)`
+    :   Creates an application pool.
+        
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later.
+
+    `rebuild_machines(self, machine_ids: list)`
     :   Rebuilds the specified machines.
         
         Requires a List of Machine Ids representing the machines to be rebuild.
         Available for Horizon 8 2006 and later.
 
-    `machines_recover(self, ids: list)`
+    `recover_machines(self, machine_ids: list)`
     :   Recovers the specified machines.
         
         Requires a List of Machine Ids representing the machines to be recovered.
         Available for Horizon 8 2006 and later.
 
-    `machines_reset(self, ids: list)`
+    `reset_machines(self, machine_ids: list)`
     :   Resets the specified machines.
         
         Requires a List of Machine Ids representing the machines to be reset.
         Available for Horizon 8 2006 and later.
 
-    `machines_restart(self, ids: list)`
+    `restart_machines(self, machine_ids: list)`
     :   Restarts the specified machines.
         
         Requires a List of Machine Ids representing the machines to be restarted.
+        Available for Horizon 8 2006 and later.
+
+    `update_application_pool(self, application_pool_id: str, application_pool_data: dict)`
+    :   Updates an application pool.
+        
+        The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
+        Requires ad_domain_id, username and password in plain text.
         Available for Horizon 8 2006 and later.
 
 `Monitor(url: str, access_token: dict)`
