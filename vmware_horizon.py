@@ -254,7 +254,7 @@ class Inventory:
         data["delete_from_disk"] = delete_from_disk
         data["force_logoff_session"] = force_logoff
         json_data = json.dumps(data)
-        response = requests.delete(f'{self.url}/rest/inventory/v1/machines/{machine_id}', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.delete(f'{self.url}/rest/inventory/v1/machines/{machine_id}', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -283,7 +283,7 @@ class Inventory:
         data["machine_delete_data"] = machine_delete_data
         data["machine_ids"] = machine_ids
         json_data = json.dumps(data)
-        response = requests.delete(f'{self.url}/rest/inventory/v1/machines', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.delete(f'{self.url}/rest/inventory/v1/machines', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -307,7 +307,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/enter-maintenance', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/enter-maintenance', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -327,7 +327,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/exit-maintenance', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/exit-maintenance', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -347,7 +347,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/rebuild', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/rebuild', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -367,7 +367,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/recover', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/recover', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -387,7 +387,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/reset', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/reset', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -407,7 +407,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(machine_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/restart', verify=False,  headers=self.access_token, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/restart', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -453,8 +453,34 @@ class Inventory:
     def get_session(self, session_id: str) -> dict:
         """Gets the Session information.
 
+        Requires session_id
         Available for Horizon 8 2006 and later."""
         response = requests.get(f'{self.url}/rest/inventory/v1/sessions/{session_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def disconnect_sessions(self, session_ids: list):
+        """Disconnects user sessions
+
+        Requires list of session ids
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(session_ids)
+        print(json_data)
+        response = requests.post(f'{self.url}/rest​/inventory​/v1​/sessions​/action​/disconnect', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")

@@ -132,9 +132,11 @@
 
 25-02-2021
 * Inventory class
+    * applied fixes to machine actions (needs testing)
     * Removed unneeded prints from get_ad_users_or_groups
     * Added get_desktop_pool_installed_applications
     * Added get_farm_installed_applications
+    * started work on disconnect_sessions
 * Entitlements Class
     * Finalized new_application_pool_entitlements
     * Finalized delete_application_pool_entitlements
