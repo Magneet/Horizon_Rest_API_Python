@@ -109,6 +109,59 @@ Classes
     `hv_disconnect(self)`
     :   "Used to close close the connection with the VMware Horizon REST API's
 
+`Entitlements(url: str, access_token: dict)`
+:   Default object for the Entitlements class for the entitlement of resources.
+
+    ### Methods
+
+    `delete_application_pools_entitlements(self, application_pool_data: dict)`
+    :   Creates an application pool.
+        
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later.
+
+    `delete_desktop_pools_entitlements(self, desktop_pools_data: list)`
+    :   Delete the bulk entitlements for a set of desktop pools.
+        
+        Requires desktop_pools_data as a list.
+        Available for Horizon 8 2006 and later.
+
+    `get_application_pool_entitlement(self, application_pool_id: str) ‑> list`
+    :   Returns the IDs of users or groups entitled to a given application pool
+        
+        Requires applictaion_pool_id
+        Available for Horizon 8 2006 and later.
+
+    `get_application_pools_entitlements(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the entitlements for Application Pools in the environment.
+        
+        Allows for filtering, either application_pool id can be used to filter on id key and or ad_user_or_group_ids can be filtered on.
+        Available for Horizon 8 2006 and later.
+
+    `get_desktop_pool_entitlement(self, desktop_pool_id: str) ‑> list`
+    :   Returns the IDs of users or groups entitled to a given desktop pool
+        
+        Requires desktop_pool_id
+        Available for Horizon 8 2006 and later.
+
+    `get_desktop_pools_entitlements(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the entitlements for desktop Pools in the environment.
+        
+        Allows for filtering, either desktop_pool id can be used to filter on id key and or ad_user_or_group_ids can be filtered on.
+        Available for Horizon 8 2006 and later.
+
+    `new_application_pools_entitlements(self, application_pool_data: dict)`
+    :   Creates an application pool.
+        
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later.
+
+    `new_desktop_pools_entitlements(self, desktop_pools_data: list)`
+    :   Create the bulk entitlements for a set of desktop pools.
+        
+        Requires desktop_pools_data as a list
+        Available for Horizon 8 2006 and later.
+
 `External(url: str, access_token: dict)`
 :   Default object for the External class for resources that are external to Horizon environment.
 
@@ -230,6 +283,18 @@ Classes
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 8 2006 and later.
 
+    `get_application_icon(self, application_icon_id: str) ‑> dict`
+    :   Gets application icon
+        
+        Requires application_icon_id
+        Available for Horizon 8 2006 and later.
+
+    `get_application_icons(self, application_pool_id: str) ‑> list`
+    :   Lists the application icons for the given application pool.
+        
+        Requires Application_pool_id
+        Available for Horizon 8 2006 and later.
+
     `get_application_pool(self, application_pool_id: str) ‑> dict`
     :   Gets a single Application pool
         
@@ -248,6 +313,12 @@ Classes
         Requires id of a desktop pool
         Available for Horizon 7.12 and later.
 
+    `get_desktop_pool_installed_applications(self, desktop_pool_id: str) ‑> list`
+    :   Lists the installed applications on the given desktop pool.
+        
+        Requires id of a desktop pool
+        Available for Horizon 8 2006 and later.
+
     `get_desktop_pools(self) ‑> list`
     :   Returns a list of dictionaries with all available Desktop Pools. 
         
@@ -255,6 +326,12 @@ Classes
 
     `get_farm(self, farm_id: str) ‑> dict`
     :   Gets the Farm information.
+        
+        Requires id of a RDS Farm
+        Available for Horizon 7.12 and later.
+
+    `get_farm_installed_applications(self, farm_id: str) ‑> list`
+    :   Lists the installed applications on the given farm.
         
         Requires id of a RDS Farm
         Available for Horizon 7.12 and later.
