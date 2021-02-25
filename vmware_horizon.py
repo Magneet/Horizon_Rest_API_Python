@@ -110,6 +110,25 @@ class Inventory:
             else:
                 return response.json()
 
+    def get_desktop_pool_installed_applications(self, desktop_pool_id: str) -> list:
+        """Lists the installed applications on the given desktop pool.
+
+        Requires id of a desktop pool
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/installed-applications', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_farms(self) -> list:
         """Lists the Farms in the environment.
 
@@ -134,6 +153,25 @@ class Inventory:
         Requires id of a RDS Farm
         Available for Horizon 7.12 and later."""
         response = requests.get(f'{self.url}/rest/inventory/v1/farms/{farm_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_farm_installed_applications(self, farm_id:str) -> list:
+        """Lists the installed applications on the given farm.
+
+        Requires id of a RDS Farm
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/farms/{farm_id}/installed-applications', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -172,7 +210,7 @@ class Inventory:
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later."""
 
-        def int_get_machines(self, page:int, maxpagesize: int, filter:list="") ->list:
+        def int_get_machines(self, page:int, maxpagesize: int, filter:dict="") ->list:
             if filter != "":
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
                 add_filter = f"?filter={filter_url}"
@@ -566,6 +604,53 @@ class Inventory:
             else:
                 return response.status_code
 
+    def get_application_icons(self, application_pool_id: str) -> list:
+        """Lists the application icons for the given application pool.
+
+        Requires Application_pool_id
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/application-icons?application_pool_id={application_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_application_icon(self, application_icon_id: str) -> dict:
+        """Gets application icon
+
+        Requires application_icon_id
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/application-icons/{application_icon_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
 class Monitor:
     def __init__(self, url: str, access_token: dict):
@@ -1359,18 +1444,14 @@ class External:
         Available for Horizon 7.12 and later."""
         def int_get_ad_users_or_groups(self, page:int, maxpagesize: int, filter:list="", group_only: bool="") ->list:
             if filter != "" and (group_only == True or group_only == False):
-                print("1")
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
                 url_filter = f"?filter={filter_url}&group_only={group_only}&page={page}&size={maxpagesize}"
             elif filter == "" and (group_only == True or group_only == False):
-                print("2")
                 url_filter = f"?group_only={group_only}&page={page}&size={maxpagesize}"
             elif filter != "" and not (group_only == True or group_only == False):
-                print("3")
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
                 url_filter = f"?filter={filter_url}&page={page}&size={maxpagesize}"
             else:
-                print("4")
                 url_filter = f"?page={page}&size={maxpagesize}"
             response = requests.get(f'{self.url}/rest/external/v1/ad-users-or-groups{url_filter}', verify=False, headers=self.access_token)
             if response.status_code == 400:
@@ -1557,3 +1638,219 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+class Entitlements:
+    def __init__(self, url: str, access_token: dict):
+        """Default object for the Entitlements class for the entitlement of resources."""
+        self.url = url
+        self.access_token = access_token
+
+    def get_application_pools_entitlements(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the entitlements for Application Pools in the environment.
+
+        Allows for filtering, either application_pool id can be used to filter on id key and or ad_user_or_group_ids can be filtered on.
+        Available for Horizon 8 2006 and later."""
+
+        def int_get_application_pools(self, page:int, maxpagesize: int, filter:dict="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/entitlements/v1/application-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/entitlements/v1/application-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_application_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_application_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def  get_application_pool_entitlement(self, application_pool_id:str) -> list:
+        """Returns the IDs of users or groups entitled to a given application pool
+
+        Requires applictaion_pool_id
+        Available for Horizon 8 2006 and later."""
+
+        response = requests.get(f'{self.url}/rest/entitlements/v1/application-pools/{application_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_application_pools_entitlements(self,application_pool_data:dict):
+        """Creates an application pool.
+
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.post(f'{self.url}/rest/entitlements/v1/application-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_application_pools_entitlements(self,application_pool_data:dict):
+        """Creates an application pool.
+
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.delete(f'{self.url}/rest/entitlements/v1/application-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def get_desktop_pools_entitlements(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the entitlements for desktop Pools in the environment.
+
+        Allows for filtering, either desktop_pool id can be used to filter on id key and or ad_user_or_group_ids can be filtered on.
+        Available for Horizon 8 2006 and later."""
+        def int_get_desktop_pools(self, page:int, maxpagesize: int, filter:dict="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/entitlements/v1/desktop-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/entitlements/v1/desktop-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def  get_desktop_pool_entitlement(self, desktop_pool_id:str) -> list:
+        """Returns the IDs of users or groups entitled to a given desktop pool
+
+        Requires desktop_pool_id
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/entitlements/v1/desktop-pools/{desktop_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_desktop_pools_entitlements(self,desktop_pools_data:list):
+        """Create the bulk entitlements for a set of desktop pools.
+
+        Requires desktop_pools_data as a list
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(desktop_pools_data)
+        response = requests.post(f'{self.url}/rest/entitlements/v1/desktop-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_desktop_pools_entitlements(self,desktop_pools_data:list):
+        """Delete the bulk entitlements for a set of desktop pools.
+
+        Requires desktop_pools_data as a list.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(desktop_pools_data)
+        response = requests.delete(f'{self.url}/rest/entitlements/v1/desktop-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code

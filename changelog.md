@@ -113,4 +113,32 @@
     * Added get_application_pool
     * Added new_application_pool
     * Added update_application_pool
+    * Added delete_application_pool
     * Renamed machine related methods
+
+23-02-2021
+* Added Entitlements class
+* Inventory Class
+    * Added get_application_icon
+    * Added get_application_icons
+* Entitlements class
+    * Added get_application_pool_entitlement
+    * Added get_application_pools_entitlements
+    * Started work on new_application_pool_entitlements (might already work, haven't tested it yet)
+
+24-02-2021
+* Entitlements Class
+    * Started work on delete_application_pool_entitlements
+
+25-02-2021
+* Inventory class
+    * Removed unneeded prints from get_ad_users_or_groups
+    * Added get_desktop_pool_installed_applications
+    * Added get_farm_installed_applications
+* Entitlements Class
+    * Finalized new_application_pool_entitlements
+    * Finalized delete_application_pool_entitlements
+    * Added get_desktop_pools_entitlements
+    * Added get_desktop_pool_entitlement
+    * Added new_desktop_pools_entitlements
+    * Added delete_desktop_pools_entitlements
