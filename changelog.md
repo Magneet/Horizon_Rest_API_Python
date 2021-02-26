@@ -144,3 +144,11 @@
     * Added get_desktop_pool_entitlement
     * Added new_desktop_pools_entitlements
     * Added delete_desktop_pools_entitlements
+
+26-02-2021
+* Inventory class
+    * Finished disconnect_sessions
+    * Added logoff_sessions
+    * Added reset_session_machines
+    * Added restart_session_machines
+    * Added send_message_sessions

@@ -283,6 +283,12 @@ Classes
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 8 2006 and later.
 
+    `disconnect_sessions(self, session_ids: list)`
+    :   Disconnects user sessions.
+        
+        Requires list of session ids
+        Available for Horizon 8 2006 and later.
+
     `get_application_icon(self, application_icon_id: str) ‑> dict`
     :   Gets application icon
         
@@ -356,12 +362,19 @@ Classes
     `get_session(self, session_id: str) ‑> dict`
     :   Gets the Session information.
         
+        Requires session_id
         Available for Horizon 8 2006 and later.
 
     `get_sessions(self, maxpagesize: int = 100) ‑> list`
     :   Lists the Session information in the environment.
         
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
+        Available for Horizon 8 2006 and later.
+
+    `logoff_sessions(self, session_ids: list, forced_logoff: bool = False)`
+    :   Logs user sessions off.
+        
+        Requires list of session ids optional to set forced to True to force a log off (defaults to False)
         Available for Horizon 8 2006 and later.
 
     `machines_enable_maintenance_mode(self, machine_ids: list)`
@@ -400,10 +413,28 @@ Classes
         Requires a List of Machine Ids representing the machines to be reset.
         Available for Horizon 8 2006 and later.
 
+    `reset_session_machines(self, session_ids: list)`
+    :   Resets machine of user sessions. The machine must be managed by Virtual Center and the session cannot be an application or an RDS desktop session.
+        
+        Requires list of session ids
+        Available for Horizon 8 2006 and later.
+
     `restart_machines(self, machine_ids: list)`
     :   Restarts the specified machines.
         
         Requires a List of Machine Ids representing the machines to be restarted.
+        Available for Horizon 8 2006 and later.
+
+    `restart_session_machines(self, session_ids: list)`
+    :   Restarts machine of user sessions. The machine must be managed by Virtual Center and the session cannot be an application or an RDS desktop session.
+        
+        Requires list of session ids
+        Available for Horizon 8 2006 and later.
+
+    `send_message_sessions(self, session_ids: list, message: str, message_type: str = 'INFO')`
+    :   Sends the message to user sessions
+        
+        Requires list of session ids, message type (INFO,WARNING,ERROR) and a message
         Available for Horizon 8 2006 and later.
 
     `update_application_pool(self, application_pool_id: str, application_pool_data: dict)`
