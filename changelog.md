@@ -132,9 +132,11 @@
 
 25-02-2021
 * Inventory class
+    * applied fixes to machine actions (needs testing)
     * Removed unneeded prints from get_ad_users_or_groups
     * Added get_desktop_pool_installed_applications
     * Added get_farm_installed_applications
+    * started work on disconnect_sessions
 * Entitlements Class
     * Finalized new_application_pool_entitlements
     * Finalized delete_application_pool_entitlements
@@ -142,3 +144,11 @@
     * Added get_desktop_pool_entitlement
     * Added new_desktop_pools_entitlements
     * Added delete_desktop_pools_entitlements
+
+26-02-2021
+* Inventory class
+    * Finished disconnect_sessions
+    * Added logoff_sessions
+    * Added reset_session_machines
+    * Added restart_session_machines
+    * Added send_message_sessions
