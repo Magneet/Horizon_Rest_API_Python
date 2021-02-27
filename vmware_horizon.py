@@ -609,8 +609,10 @@ class Inventory:
             else:
                 response = requests.get(f'{self.url}/rest/inventory/v1/application-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
             if response.status_code == 400:
-                error_message = (response.json())["error_message"]
-                raise Exception(f"Error {response.status_code}: {error_message}")
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
             elif response.status_code != 200:
                 raise Exception(f"Error {response.status_code}: {response.reason}")
             else:
@@ -664,7 +666,10 @@ class Inventory:
         json_data = json.dumps(application_pool_data)
         response = requests.post(f'{self.url}/rest/inventory/v1/application-pools', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 409:
             error_message = (response.json())["error_message"]
@@ -766,6 +771,126 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def remove_machines(self, desktop_pool_id:str,machine_ids: list):
+        """Removes machines from the given manual desktop pool.
+
+        Requires list of machine_ids and desktop_pool_id to remove them from
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(machine_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/action/remove-machines', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def add_machines(self, desktop_pool_id:str,machine_ids: list):
+        """Adds machines to the given manual desktop pool.
+
+        Requires list of machine_ids and desktop_pool_id to add them to
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(machine_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/action/add-machines', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def add_machines_by_name(self, desktop_pool_id:str, machine_data: list):
+        """Adds machines to the given manual desktop pool.
+
+        Requires requires desktop_pool_id and list of of dicts where each dict has name and user_id.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(machine_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/action/add-machines-by-name', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def assign_user_to_machine(self, machine_id:str, user_ids: list):
+        """Assigns the specified users to the machine.
+
+        Requires machine_id of the machine and list of user_ids.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(user_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/{machine_id}/action/assign-users', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def unassign_user_to_machine(self, machine_id:str, user_ids: list):
+        """Unassigns the specified users to the machine.
+
+        Requires machine_id of the machine and list of user_ids.
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(user_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/{machine_id}/action/unassign-users', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")

@@ -152,3 +152,12 @@
     * Added reset_session_machines
     * Added restart_session_machines
     * Added send_message_sessions
+
+27-02-2021
+* Inventory Class
+    * Added remove_machines
+    * Added Add_Machines
+    * Added add_machines_by_name
+    * Added assign_user_to_machine
+    * Added unassign_user_to_machine
+    * Fixed bug in new_application_pool
