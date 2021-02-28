@@ -263,6 +263,36 @@ Classes
 
     ### Methods
 
+    `add_global_desktop_entitlement(self, global_desktop_entitlement_data: dict)`
+    :   Creates a Global Desktop Entitlement.
+        
+        Requires global_desktop_entitlement_data as a dict
+        Available for Horizon 8 2006 and later.
+
+    `add_global_desktop_entitlement_local_desktop_pools(self, global_desktop_entitlement_id: str, desktop_pool_ids: list)`
+    :   Adds a local desktop pool to a GLobal Entitlement
+        
+        Requires global_desktop_entitlement_id as a string and desktop_pool_ids as a list
+        Available for Horizon 8 2012 and later.
+
+    `add_machines(self, desktop_pool_id: str, machine_ids: list)`
+    :   Adds machines to the given manual desktop pool.
+        
+        Requires list of machine_ids and desktop_pool_id to add them to
+        Available for Horizon 8 2006 and later.
+
+    `add_machines_by_name(self, desktop_pool_id: str, machine_data: list)`
+    :   Adds machines to the given manual desktop pool.
+        
+        Requires requires desktop_pool_id and list of of dicts where each dict has name and user_id.
+        Available for Horizon 8 2006 and later.
+
+    `assign_user_to_machine(self, machine_id: str, user_ids: list)`
+    :   Assigns the specified users to the machine.
+        
+        Requires machine_id of the machine and list of user_ids.
+        Available for Horizon 8 2006 and later.
+
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
         
@@ -347,6 +377,27 @@ Classes
         
         Available for Horizon 7.12 and later.
 
+    `get_global_desktop_entitlement(self, global_desktop_entitlement_id: str) ‑> dict`
+    :   Gets the Global Desktop Entitlement in the environment.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_desktop_entitlement_compatible_desktop_pools(self, global_desktop_entitlement_id: str) ‑> list`
+    :   Lists Local Application Pools which are compatible with Global Application Entitlement.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_desktop_entitlement_local_desktop_pools(self, global_desktop_entitlement_id: str) ‑> list`
+    :   Lists Local Desktop Pools which are assigned to Global Desktop Entitlement.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_desktop_entitlements(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the Global Application Entitlements in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later.
+
     `get_machine(self, machine_id: str) ‑> dict`
     :   Gets the Machine information.
         
@@ -407,6 +458,18 @@ Classes
         Requires a List of Machine Ids representing the machines to be recovered.
         Available for Horizon 8 2006 and later.
 
+    `remove_global_desktop_entitlement_local_desktop_pools(self, global_desktop_entitlement_id: str, desktop_pool_ids: list)`
+    :   Removes Local Desktop Pools from Global Desktop Entitlement.
+        
+        Requires global_desktop_entitlement_id as a string and desktop_pool_ids as a list
+        Available for Horizon 8 2012 and later.
+
+    `remove_machines(self, desktop_pool_id: str, machine_ids: list)`
+    :   Removes machines from the given manual desktop pool.
+        
+        Requires list of machine_ids and desktop_pool_id to remove them from
+        Available for Horizon 8 2006 and later.
+
     `reset_machines(self, machine_ids: list)`
     :   Resets the specified machines.
         
@@ -435,6 +498,12 @@ Classes
     :   Sends the message to user sessions
         
         Requires list of session ids, message type (INFO,WARNING,ERROR) and a message
+        Available for Horizon 8 2006 and later.
+
+    `unassign_user_to_machine(self, machine_id: str, user_ids: list)`
+    :   Unassigns the specified users to the machine.
+        
+        Requires machine_id of the machine and list of user_ids.
         Available for Horizon 8 2006 and later.
 
     `update_application_pool(self, application_pool_id: str, application_pool_data: dict)`

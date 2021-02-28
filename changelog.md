@@ -161,3 +161,13 @@
     * Added assign_user_to_machine
     * Added unassign_user_to_machine
     * Fixed bug in new_application_pool
+
+28-02-2021
+* Inventory Class
+    * Applied fix to get_application_pools
+    * Added get_global_desktop_entitlements
+    * Added get_global_desktop_entitlement
+    * Added get_global_desktop_entitlement_compatible_desktop_pools
+    * Added add_global_desktop_entitlement_local_desktop_pools
+    * Added get_global_desktop_entitlement_local_desktop_pools
+    * Added remove_global_desktop_entitlement_local_desktop_pools
