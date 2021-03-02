@@ -263,6 +263,12 @@ Classes
 
     ### Methods
 
+    `add_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id: str, desktop_pool_ids: list)`
+    :   Adds a local Application pool to a GLobal Application Entitlement
+        
+        Requires global_application_entitlement_id as a string and desktop_pool_ids as a list
+        Available for Horizon 8 2012 and later.
+
     `add_global_desktop_entitlement(self, global_desktop_entitlement_data: dict)`
     :   Creates a Global Desktop Entitlement.
         
@@ -270,7 +276,7 @@ Classes
         Available for Horizon 8 2006 and later.
 
     `add_global_desktop_entitlement_local_desktop_pools(self, global_desktop_entitlement_id: str, desktop_pool_ids: list)`
-    :   Adds a local desktop pool to a GLobal Entitlement
+    :   Adds a local desktop pool to a GLobal desktop Entitlement
         
         Requires global_desktop_entitlement_id as a string and desktop_pool_ids as a list
         Available for Horizon 8 2012 and later.
@@ -377,6 +383,27 @@ Classes
         
         Available for Horizon 7.12 and later.
 
+    `get_global_application_entitlement(self, global_application_entitlement_id: str) ‑> dict`
+    :   Gets the Global Application Entitlement in the environment.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_application_entitlement_compatible_application_pools(self, global_application_entitlement_id: str) ‑> list`
+    :   Lists Local Application Pools which are compatible with Global Application Entitlement.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id: str) ‑> list`
+    :   Lists Local Application Pools which are assigned to Global Application Entitlement.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_global_application_entitlements(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the Global Application Entitlements in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later.
+
     `get_global_desktop_entitlement(self, global_desktop_entitlement_id: str) ‑> dict`
     :   Gets the Global Desktop Entitlement in the environment.
         
@@ -457,6 +484,12 @@ Classes
         
         Requires a List of Machine Ids representing the machines to be recovered.
         Available for Horizon 8 2006 and later.
+
+    `remove_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id: str, desktop_pool_ids: list)`
+    :   Removes Local Application Pools from Global Application Entitlement.
+        
+        Requires global_application_entitlement_id as a string and desktop_pool_ids as a list
+        Available for Horizon 8 2012 and later.
 
     `remove_global_desktop_entitlement_local_desktop_pools(self, global_desktop_entitlement_id: str, desktop_pool_ids: list)`
     :   Removes Local Desktop Pools from Global Desktop Entitlement.

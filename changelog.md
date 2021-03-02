@@ -171,3 +171,12 @@
     * Added add_global_desktop_entitlement_local_desktop_pools
     * Added get_global_desktop_entitlement_local_desktop_pools
     * Added remove_global_desktop_entitlement_local_desktop_pools
+
+02-03-2021
+* Inventory class
+    * Added get_global_application_entitlement
+    * Added get_global_application_entitlements
+    * Added get_global_application_entitlement_compatible_application_pools
+    * Added get_global_application_entitlement_local_Application_pools
+    * Added remove_global_application_entitlement_local_Application_pools
+    * Added add_global_application_entitlement_local_Application_pools
