@@ -180,3 +180,10 @@
     * Added get_global_application_entitlement_local_Application_pools
     * Added remove_global_application_entitlement_local_Application_pools
     * Added add_global_application_entitlement_local_Application_pools
+
+03-03-2021
+* Entitlements Class
+    * Added add_global_desktop_entitlement
+    * Added delete_global_desktop_entitlement
+    * Added get_global_desktop_entitlement
+    * Added get_global_desktop_entitlements

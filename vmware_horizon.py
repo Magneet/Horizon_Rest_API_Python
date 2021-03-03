@@ -1164,14 +1164,14 @@ class Inventory:
             else:
                 return response.json()
 
-    def add_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id:str, desktop_pool_ids: list):
+    def add_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id:str, application_pool_ids: list):
         """Adds a local Application pool to a GLobal Application Entitlement
 
-        Requires global_application_entitlement_id as a string and desktop_pool_ids as a list
+        Requires global_application_entitlement_id as a string and application_pool_ids as a list
         Available for Horizon 8 2012 and later."""
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
-        json_data = json.dumps(desktop_pool_ids)
+        json_data = json.dumps(application_pool_ids)
         response = requests.post(f'{self.url}/rest/inventory/v1/global-application-entitlements/{global_application_entitlement_id}/local-application-pools', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
@@ -1211,14 +1211,14 @@ class Inventory:
             else:
                 return response.json()
 
-    def remove_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id:str, desktop_pool_ids: list):
+    def remove_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id:str, application_pool_ids: list):
         """Removes Local Application Pools from Global Application Entitlement.
 
-        Requires global_application_entitlement_id as a string and desktop_pool_ids as a list
+        Requires global_application_entitlement_id as a string and application_pool_ids as a list
         Available for Horizon 8 2012 and later."""
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
-        json_data = json.dumps(desktop_pool_ids)
+        json_data = json.dumps(application_pool_ids)
         response = requests.delete(f'{self.url}/rest/inventory/v1/global-application-entitlements/{global_application_entitlement_id}/local-application-pools', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
@@ -2437,3 +2437,108 @@ class Entitlements:
                 raise "Error: " + str(e)
             else:
                 return response.status_code
+
+    def get_global_desktop_entitlement(self, global_desktop_entitlement_id:str) -> dict:
+        """Gets the user or group entitlements for a Global Desktop Entitlement.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/entitlements/v1/global-desktop-entitlements/{global_desktop_entitlement_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_global_desktop_entitlements(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the user or group entitlements for Global Desktop Entitlements in the environment.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later."""
+
+        def int_get_global_desktop_entitlements(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                add_filter = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                response = requests.get(f'{self.url}/rest/entitlements/v1/global-desktop-entitlements?filter={add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/entitlements/v1/global-desktop-entitlements?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_global_desktop_entitlements(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_global_desktop_entitlements(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def add_global_desktop_entitlement(self, global_desktop_entitlement_data: dict):
+        """Create the bulk entitlements for a set of Global Desktop Entitlements.
+
+        Requires global_desktop_entitlement_data as a dict
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_desktop_entitlement_data)
+        response = requests.post(f'{self.url}/rest/entitlements/v1/global-desktop-entitlements', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def delete_global_desktop_entitlement(self, global_desktop_entitlement_data: dict):
+        """Delete the bulk entitlements for a set of Global Desktop Entitlements.
+
+        Requires global_desktop_entitlement_data as a dict
+        Available for Horizon 8 2006 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_desktop_entitlement_data)
+        response = requests.delete(f'{self.url}/rest/entitlements/v1/global-desktop-entitlements', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
