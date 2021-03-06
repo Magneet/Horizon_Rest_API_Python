@@ -187,3 +187,12 @@
     * Added delete_global_desktop_entitlement
     * Added get_global_desktop_entitlement
     * Added get_global_desktop_entitlements
+
+06-03-2021
+* Entitlements class
+    * Added get_application_pools_entitlement
+    * Added get_application_pools_entitlements
+    * Added delete_global_application_entitlement
+    * Added new_global_application_entitlement
+    * renamed add_global_desktop_entitlement to new_global_desktop_entitlement
+    * small fixes to add_global_desktop_entitlement and delete_global_desktop_entitlement
