@@ -196,3 +196,11 @@
     * Added new_global_application_entitlement
     * renamed add_global_desktop_entitlement to new_global_desktop_entitlement
     * small fixes to add_global_desktop_entitlement and delete_global_desktop_entitlement
+
+07-03-2021
+* Added Federation Class
+* Federation Class
+    * Added get_cloud_pod_federation
+    * Added get_home_sites
+    * Added get_site
+    * Added get_sites

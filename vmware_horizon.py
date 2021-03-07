@@ -2647,3 +2647,116 @@ class Entitlements:
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
+
+class Federation:
+    def __init__(self, url: str, access_token: dict):
+        """Default object for the pools class where all Desktop Pool Actions will be performed."""
+        self.url = url
+        self.access_token = access_token
+
+    def get_cloud_pod_federation(self) -> dict:
+        """Retrieves the pod federation details.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/cpa', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_home_sites(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists all the home sites in the pod federation.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later."""
+
+        def int_Get_home_sites(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                add_filter = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                response = requests.get(f'{self.url}/rest/federation/v1/home-sites?filter={add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/federation/v1/home-sites?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_Get_home_sites(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_Get_home_sites(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_sites(self) -> list:
+        """Lists all the sites in the pod federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/sites', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_site(self, site_id:str) -> dict:
+        """Retrives a given site.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()

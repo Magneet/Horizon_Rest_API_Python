@@ -304,6 +304,32 @@ Classes
         Requires vcenter_id and datacenter id
         Available for Horizon 7.12 and later.
 
+`Federation(url: str, access_token: dict)`
+:   Default object for the pools class where all Desktop Pool Actions will be performed.
+
+    ### Methods
+
+    `get_cloud_pod_federation(self) ‑> dict`
+    :   Retrieves the pod federation details.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_home_sites(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists all the home sites in the pod federation.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later.
+
+    `get_site(self, site_id: str) ‑> dict`
+    :   Retrives a given site.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_sites(self) ‑> list`
+    :   Lists all the sites in the pod federation.
+        
+        Available for Horizon 8 2012 and later.
+
 `Inventory(url: str, access_token: dict)`
 :   Default object for the pools class where all Desktop Pool Actions will be performed.
 
