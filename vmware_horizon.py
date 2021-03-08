@@ -2760,3 +2760,133 @@ class Federation:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def update_cloud_pod_federation(self, name:str) -> dict:
+        """Updates a Pod Federation
+
+        Requires a new name of the cpa as a string
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/federation/v1/cpa', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def get_home_site(self, home_site_id:str) -> dict:
+        """Retrieves a given home site in the pod federation.
+
+        Requires a home_site_id as a string
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/home-sites/1/{home_site_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_site(self, name:str, description:str) -> dict:
+        """creates a site.
+
+        Requires the name and description as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["description"] = description
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/federation/v1/sites', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def update_site(self,site_id:str  ,name:str, description:str) -> dict:
+        """Updates a site.
+
+        Requires site_id, the name and description as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["description"] = description
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def delete_site(self, site_id:str) -> dict:
+        """Retrives a given site.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.delete(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()

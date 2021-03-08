@@ -204,3 +204,11 @@
     * Added get_home_sites
     * Added get_site
     * Added get_sites
+
+08-03-2021
+* federation class
+    * Added update_cloud_pod_federation
+    * Added get_home_site
+    * Added update_site
+    * Added delete_site
+    * Added new_site
