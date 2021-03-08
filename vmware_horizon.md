@@ -309,9 +309,20 @@ Classes
 
     ### Methods
 
+    `delete_site(self, site_id: str) ‑> dict`
+    :   Retrives a given site.
+        
+        Available for Horizon 8 2012 and later.
+
     `get_cloud_pod_federation(self) ‑> dict`
     :   Retrieves the pod federation details.
         
+        Available for Horizon 8 2012 and later.
+
+    `get_home_site(self, home_site_id: str) ‑> dict`
+    :   Retrieves a given home site in the pod federation.
+        
+        Requires a home_site_id as a string
         Available for Horizon 8 2012 and later.
 
     `get_home_sites(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
@@ -328,6 +339,24 @@ Classes
     `get_sites(self) ‑> list`
     :   Lists all the sites in the pod federation.
         
+        Available for Horizon 8 2012 and later.
+
+    `new_site(self, name: str, description: str) ‑> dict`
+    :   creates a site.
+        
+        Requires the name and description as strings
+        Available for Horizon 8 2012 and later.
+
+    `update_cloud_pod_federation(self, name: str) ‑> dict`
+    :   Updates a Pod Federation
+        
+        Requires a new name of the cpa as a string
+        Available for Horizon 8 2012 and later.
+
+    `update_site(self, site_id: str, name: str, description: str) ‑> dict`
+    :   Updates a site.
+        
+        Requires site_id, the name and description as strings
         Available for Horizon 8 2012 and later.
 
 `Inventory(url: str, access_token: dict)`
