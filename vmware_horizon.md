@@ -331,6 +331,16 @@ Classes
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2012 and later.
 
+    `get_pod(self, pod_id: str) ‑> dict`
+    :   Retrieves a given pod from the pod federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_pods(self) ‑> list`
+    :   Lists all the pods in the pod federation.
+        
+        Available for Horizon 8 2012 and later.
+
     `get_site(self, site_id: str) ‑> dict`
     :   Retrives a given site.
         
@@ -351,6 +361,12 @@ Classes
     :   Updates a Pod Federation
         
         Requires a new name of the cpa as a string
+        Available for Horizon 8 2012 and later.
+
+    `update_pod(self, pod_id: str, description: str, site_id: str, name: str, cloud_managed: bool = '') ‑> dict`
+    :   Updates the given pod in the pod federation.
+        
+        Requires pod_id, site_id, the name and description as strings, cloud_managed needs to be a bool
         Available for Horizon 8 2012 and later.
 
     `update_site(self, site_id: str, name: str, description: str) ‑> dict`
