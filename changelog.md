@@ -225,3 +225,5 @@
     * Added get_pod_endpoint
     * Added get_tasks
     * Added get_task
+    * Added join_cpa
+    * Added eject_pod

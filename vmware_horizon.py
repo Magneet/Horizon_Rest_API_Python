@@ -3105,3 +3105,67 @@ class Federation:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def eject_pod(self, pod_id:str) :
+        """Removes a pod from Cloud Pod Federation.
+
+        Requires pod_id as a string
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["pod_id"] = pod_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/eject', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def join_cpa(self, remote_pod_address:str, username:str, password:str) -> list:
+        """ Join Cloud Pod Federation.
+
+        Requires remote_pod_address (fqdn), username (domain\\username) and password as str
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["password"] = password
+        data["remote_pod_address"] = remote_pod_address
+        data["username"] = username
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/join', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
