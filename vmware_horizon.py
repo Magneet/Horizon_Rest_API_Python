@@ -2721,7 +2721,10 @@ class Federation:
         Available for Horizon 8 2012 and later."""
         response = requests.get(f'{self.url}/rest/federation/v1/sites', verify=False,  headers=self.access_token)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2744,7 +2747,10 @@ class Federation:
         Available for Horizon 8 2012 and later."""
         response = requests.get(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2761,7 +2767,7 @@ class Federation:
             else:
                 return response.json()
 
-    def update_cloud_pod_federation(self, name:str) -> dict:
+    def update_cloud_pod_federation(self, name:str):
         """Updates a Pod Federation
 
         Requires a new name of the cpa as a string
@@ -2773,7 +2779,10 @@ class Federation:
         json_data = json.dumps(data)
         response = requests.put(f'{self.url}/rest/federation/v1/cpa', verify=False,  headers=headers, data = json_data)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2795,7 +2804,10 @@ class Federation:
         Available for Horizon 8 2012 and later."""
         response = requests.get(f'{self.url}/rest/federation/v1/home-sites/1/{home_site_id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2812,7 +2824,7 @@ class Federation:
             else:
                 return response.json()
 
-    def new_site(self, name:str, description:str) -> dict:
+    def new_site(self, name:str, description:str):
         """creates a site.
 
         Requires the name and description as strings
@@ -2825,7 +2837,10 @@ class Federation:
         json_data = json.dumps(data)
         response = requests.post(f'{self.url}/rest/federation/v1/sites', verify=False,  headers=headers, data = json_data)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2840,7 +2855,7 @@ class Federation:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def update_site(self,site_id:str  ,name:str, description:str) -> dict:
+    def update_site(self,site_id:str  ,name:str, description:str):
         """Updates a site.
 
         Requires site_id, the name and description as strings
@@ -2853,7 +2868,10 @@ class Federation:
         json_data = json.dumps(data)
         response = requests.put(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=headers, data = json_data)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2868,13 +2886,16 @@ class Federation:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def delete_site(self, site_id:str) -> dict:
+    def delete_site(self, site_id:str):
         """Retrives a given site.
 
         Available for Horizon 8 2012 and later."""
         response = requests.delete(f'{self.url}/rest/federation/v1/sites/{site_id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
-            error_message = (response.json())["error_message"]
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         if response.status_code == 404:
             error_message = (response.json())["error_message"]
@@ -2882,6 +2903,200 @@ class Federation:
         elif response.status_code == 403:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_pods(self) -> list:
+        """Lists all the pods in the pod federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/pods', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_pod(self, pod_id:str) -> dict:
+        """Retrieves a given pod from the pod federation.
+
+        Requires pod_id as a string
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/pods/{pod_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def update_pod(self,pod_id:str, description:str, site_id:str ,name:str, cloud_managed:bool=""):
+        """Updates the given pod in the pod federation.
+
+        Requires pod_id, site_id, the name and description as strings, cloud_managed needs to be a bool
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        if cloud_managed != "":
+            data["cloud_managed"] = cloud_managed
+        if description!="":
+            data["description"] = description
+        data["name"] = name
+        data["site_id"] = site_id
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/federation/v1/pods/{pod_id}', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def get_pod_endpoints(self, pod_id:str) -> list:
+        """Lists all the pod endpoints for the given pod.
+
+        Requires pod_id as a string
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/pods/{pod_id}/endpoints', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_pod_endpoint(self, pod_id:str, endpoint_id:str) -> dict:
+        """Lists all the pod endpoints for the given pod.
+
+        Requires pod_id and endpoint_id as a string
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/pods/{pod_id}/endpoints/{endpoint_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_tasks(self) -> list:
+        """Lists all the CPA tasks in the pod federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/cpa/tasks', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_task(self, task_id:str) -> dict:
+        """Retrieves the information for a given task.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/federation/v1/cpa/tasks/{task_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
