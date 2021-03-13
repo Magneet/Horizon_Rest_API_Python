@@ -218,3 +218,10 @@
     * Added get_pods
     * Added get_pod
     * Added update_pod
+
+13-03-2021
+* federation class
+    * Added get_pod_endpoints
+    * Added get_pod_endpoint
+    * Added get_tasks
+    * Added get_task
