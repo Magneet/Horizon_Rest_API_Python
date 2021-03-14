@@ -309,9 +309,21 @@ Classes
 
     ### Methods
 
-    `delete_site(self, site_id: str) ‑> dict`
+    `delete_home_sites(self, homesite_ids: list) ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
+        Available for Horizon 8 2012 and later.
+
+    `delete_site(self, site_id: str)`
     :   Retrives a given site.
         
+        Available for Horizon 8 2012 and later.
+
+    `eject_pod(self, pod_id: str)`
+    :   Removes a pod from Cloud Pod Federation.
+        
+        Requires pod_id as a string
         Available for Horizon 8 2012 and later.
 
     `get_cloud_pod_federation(self) ‑> dict`
@@ -334,6 +346,19 @@ Classes
     `get_pod(self, pod_id: str) ‑> dict`
     :   Retrieves a given pod from the pod federation.
         
+        Requires pod_id as a string
+        Available for Horizon 8 2012 and later.
+
+    `get_pod_endpoint(self, pod_id: str, endpoint_id: str) ‑> dict`
+    :   Lists all the pod endpoints for the given pod.
+        
+        Requires pod_id and endpoint_id as a string
+        Available for Horizon 8 2012 and later.
+
+    `get_pod_endpoints(self, pod_id: str) ‑> list`
+    :   Lists all the pod endpoints for the given pod.
+        
+        Requires pod_id as a string
         Available for Horizon 8 2012 and later.
 
     `get_pods(self) ‑> list`
@@ -351,25 +376,68 @@ Classes
         
         Available for Horizon 8 2012 and later.
 
-    `new_site(self, name: str, description: str) ‑> dict`
+    `get_task(self, task_id: str) ‑> dict`
+    :   Retrieves the information for a given task.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_tasks(self) ‑> list`
+    :   Lists all the CPA tasks in the pod federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_user_home_site(self, user_id: str, global_application_entitlement_id: str = '', global_desktop_entitlement_id: str = '') ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires global_application_entitlement_id, global_desktop_entitlement_id, user_id as strings
+        Available for Horizon 8 2012 and later.
+
+    `initialize_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `join_cpa(self, remote_pod_address: str, username: str, password: str) ‑> dict`
+    :   Join Cloud Pod Federation.
+        
+        Requires remote_pod_address (fqdn), username (domain\username) and password as str
+        Available for Horizon 8 2012 and later.
+
+    `new_home_site(self, ad_user_or_group_id: str, global_application_entitlement_id: str, global_desktop_entitlement_id: str, site_id: str) ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
+        Available for Horizon 8 2012 and later.
+
+    `new_site(self, name: str, description: str)`
     :   creates a site.
         
         Requires the name and description as strings
         Available for Horizon 8 2012 and later.
 
-    `update_cloud_pod_federation(self, name: str) ‑> dict`
+    `uninitialize_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `unjoin_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `update_cloud_pod_federation(self, name: str)`
     :   Updates a Pod Federation
         
         Requires a new name of the cpa as a string
         Available for Horizon 8 2012 and later.
 
-    `update_pod(self, pod_id: str, description: str, site_id: str, name: str, cloud_managed: bool = '') ‑> dict`
+    `update_pod(self, pod_id: str, description: str, site_id: str, name: str, cloud_managed: bool = '')`
     :   Updates the given pod in the pod federation.
         
         Requires pod_id, site_id, the name and description as strings, cloud_managed needs to be a bool
         Available for Horizon 8 2012 and later.
 
-    `update_site(self, site_id: str, name: str, description: str) ‑> dict`
+    `update_site(self, site_id: str, name: str, description: str)`
     :   Updates a site.
         
         Requires site_id, the name and description as strings
