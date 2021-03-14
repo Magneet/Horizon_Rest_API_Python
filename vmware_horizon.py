@@ -3136,7 +3136,7 @@ class Federation:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
-    def join_cpa(self, remote_pod_address:str, username:str, password:str) -> list:
+    def join_cpa(self, remote_pod_address:str, username:str, password:str) -> dict:
         """ Join Cloud Pod Federation.
 
         Requires remote_pod_address (fqdn), username (domain\\username) and password as str
@@ -3161,6 +3161,213 @@ class Federation:
         elif response.status_code == 403:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def unjoin_cpa(self) -> dict:
+        """Unjoin from Cloud Pod Federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/unjoin', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def initialize_cpa(self) -> dict:
+        """Initialize Cloud Pod Federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/initialize', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def uninitialize_cpa(self) -> dict:
+        """Initialize Cloud Pod Federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/uninitialize', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def unjoin_cpa(self) -> dict:
+        """Initialize Cloud Pod Federation.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.post(f'{self.url}/rest/federation/v1/cpa/action/unjoin', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_home_site(self, ad_user_or_group_id:str, global_application_entitlement_id:str, global_desktop_entitlement_id:str, site_id:str) -> list:
+        """Creates the given home site in the pod federation.
+
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["ad_user_or_group_id"] = ad_user_or_group_id
+        data["global_application_entitlement_id"] = global_application_entitlement_id
+        data["global_desktop_entitlement_id"] = global_desktop_entitlement_id
+        data["site_id"] = ad_user_or_group_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/federation/v1/home-sites', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def delete_home_sites(self, homesite_ids:list) -> list:
+        """Creates the given home site in the pod federation.
+
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["homesite_ids"] = homesite_ids
+        json_data = json.dumps(data)
+        response = requests.delete(f'{self.url}/rest/federation/v1/home-sites', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_user_home_site(self, user_id:str, global_application_entitlement_id:str="", global_desktop_entitlement_id:str="") -> list:
+        """Creates the given home site in the pod federation.
+
+        Requires global_application_entitlement_id, global_desktop_entitlement_id, user_id as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        if global_application_entitlement_id !="":
+            	data["global_application_entitlement_id"] = global_application_entitlement_id
+        if global_desktop_entitlement_id !="":
+            data["global_desktop_entitlement_id"] = global_desktop_entitlement_id
+        data["user_id"] = user_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/federation/v1/home-sites', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:

@@ -227,3 +227,12 @@
     * Added get_task
     * Added join_cpa
     * Added eject_pod
+
+14-03-2021
+* federation class
+    * Added unjoin_cpa
+    * Added initialize_cpa
+    * Added uninitialize_cpa
+    * Added get_user_home_site
+    * Added delete_home_sites
+    * Added new_home_site

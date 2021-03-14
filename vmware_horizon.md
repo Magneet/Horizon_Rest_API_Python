@@ -309,6 +309,12 @@ Classes
 
     ### Methods
 
+    `delete_home_sites(self, homesite_ids: list) ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
+        Available for Horizon 8 2012 and later.
+
     `delete_site(self, site_id: str)`
     :   Retrives a given site.
         
@@ -380,16 +386,43 @@ Classes
         
         Available for Horizon 8 2012 and later.
 
-    `join_cpa(self, remote_pod_address: str, username: str, password: str) ‑> list`
+    `get_user_home_site(self, user_id: str, global_application_entitlement_id: str = '', global_desktop_entitlement_id: str = '') ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires global_application_entitlement_id, global_desktop_entitlement_id, user_id as strings
+        Available for Horizon 8 2012 and later.
+
+    `initialize_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `join_cpa(self, remote_pod_address: str, username: str, password: str) ‑> dict`
     :   Join Cloud Pod Federation.
         
         Requires remote_pod_address (fqdn), username (domain\username) and password as str
+        Available for Horizon 8 2012 and later.
+
+    `new_home_site(self, ad_user_or_group_id: str, global_application_entitlement_id: str, global_desktop_entitlement_id: str, site_id: str) ‑> list`
+    :   Creates the given home site in the pod federation.
+        
+        Requires ad_user_or_group_id, global_application_entitlement_id, global_desktop_entitlement_id, site_id as strings
         Available for Horizon 8 2012 and later.
 
     `new_site(self, name: str, description: str)`
     :   creates a site.
         
         Requires the name and description as strings
+        Available for Horizon 8 2012 and later.
+
+    `uninitialize_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
+        Available for Horizon 8 2012 and later.
+
+    `unjoin_cpa(self) ‑> dict`
+    :   Initialize Cloud Pod Federation.
+        
         Available for Horizon 8 2012 and later.
 
     `update_cloud_pod_federation(self, name: str)`
