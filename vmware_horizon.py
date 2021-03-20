@@ -1235,6 +1235,46 @@ class Inventory:
             else:
                 return response.json()
 
+    def desktop_pool_push_image(self, desktop_pool_id:str, start_time:str, add_virtual_tpm:bool=False, im_stream_id:str="",im_tag_id:str="",logoff_policy:str="WAIT_FOR_LOGOFF",parent_vm_id:str="",snapshot_id:str="", stop_on_first_error:str=True):
+        """Creates the given home site in the pod federation.
+
+        Requires global_application_entitlement_id, global_desktop_entitlement_id, user_id as strings
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        if add_virtual_tpm !=False:
+            data["add_virtual_tpm"] = add_virtual_tpm
+        if im_stream_id != "" and im_tag_id !="":
+            data["im_stream_id"] = im_stream_id
+            data["im_tag_id"] = im_tag_id
+        data["logoff_policy"] = logoff_policy
+        if parent_vm_id != "" and snapshot_id !="":
+            data["parent_vm_id"] = parent_vm_id
+            data["snapshot_id"] = snapshot_id
+        data["start_time"]= start_time
+        data["stop_on_first_error"] = stop_on_first_error
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/action/schedule-push-image', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""
@@ -2207,6 +2247,28 @@ class External:
             response = requests.get(f'{self.url}/rest/external/v1/network-interface-cards?vcenter_id={vcenter_id}&vm_template_id={vm_template_id}', verify=False,  headers=self.access_token)
         else:
             raise("Either VM template or (base VM with snapshot) are required for fetching network interface cards.")
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_virtual_machines(self, vcenter_id:str) -> list:
+        """Lists all the VMs from a vCenter.
+
+        Requires datacenter_id and vcenter_id.
+        Available for Horizon 8 2006 and later."""
+
+        response = requests.get(f'{self.url}/rest/external/v1/virtual-machines?vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -3350,7 +3412,7 @@ class Federation:
         headers["Content-Type"] = 'application/json'
         data = {}
         if global_application_entitlement_id !="":
-            	data["global_application_entitlement_id"] = global_application_entitlement_id
+            data["global_application_entitlement_id"] = global_application_entitlement_id
         if global_desktop_entitlement_id !="":
             data["global_desktop_entitlement_id"] = global_desktop_entitlement_id
         data["user_id"] = user_id

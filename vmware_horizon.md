@@ -292,6 +292,12 @@ Classes
         Requires host_or_cluster_id and vcenter_id.
         Available for Horizon 8 2006 and later.
 
+    `get_virtual_machines(self, vcenter_id: str) ‑> list`
+    :   Lists all the VMs from a vCenter.
+        
+        Requires datacenter_id and vcenter_id.
+        Available for Horizon 8 2006 and later.
+
     `get_vm_folders(self, vcenter_id: str, datacenter_id: str) ‑> list`
     :   Lists all the VM folders from the vCenter for the given datacenter.
         
