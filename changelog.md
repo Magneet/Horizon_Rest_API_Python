@@ -242,3 +242,9 @@
     * Added get_virtual_machines
 * Inventory Class
     * Added desktop_pool_push_image
+
+21-03-2021
+* Inventory Class
+    * Added cancel_desktop_pool_push_image
+    * Added get_rds_servers
+    * Added get_rds_server
