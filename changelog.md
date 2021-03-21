@@ -236,3 +236,15 @@
     * Added get_user_home_site
     * Added delete_home_sites
     * Added new_home_site
+
+20-03-2021
+* External Class
+    * Added get_virtual_machines
+* Inventory Class
+    * Added desktop_pool_push_image
+
+21-03-2021
+* Inventory Class
+    * Added cancel_desktop_pool_push_image
+    * Added get_rds_servers
+    * Added get_rds_server

@@ -292,6 +292,12 @@ Classes
         Requires host_or_cluster_id and vcenter_id.
         Available for Horizon 8 2006 and later.
 
+    `get_virtual_machines(self, vcenter_id: str) ‑> list`
+    :   Lists all the VMs from a vCenter.
+        
+        Requires datacenter_id and vcenter_id.
+        Available for Horizon 8 2006 and later.
+
     `get_vm_folders(self, vcenter_id: str, datacenter_id: str) ‑> list`
     :   Lists all the VM folders from the vCenter for the given datacenter.
         
@@ -484,6 +490,11 @@ Classes
         Requires machine_id of the machine and list of user_ids.
         Available for Horizon 8 2006 and later.
 
+    `cancel_desktop_pool_push_image(self, desktop_pool_id: str)`
+    :   Lists Local Application Pools which are assigned to Global Application Entitlement.
+        
+        Available for Horizon 8 2012 and later.
+
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
         
@@ -503,6 +514,13 @@ Classes
         Requires list of ids of the machines to remove 
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 8 2006 and later.
+
+    `desktop_pool_push_image(self, desktop_pool_id: str, start_time: str, add_virtual_tpm: bool = False, im_stream_id: str = '', im_tag_id: str = '', logoff_policy: str = 'WAIT_FOR_LOGOFF', parent_vm_id: str = '', snapshot_id: str = '', stop_on_first_error: bool = True)`
+    :   Schedule/reschedule a request to update the image in an instant clone desktop pool
+        
+        Requires start_time in epoch, desktop_pool_id as string and either im_stream_id and im_tag_id OR parent_vm_id and snapshit_id as string.
+        Optional: stop_on_first_error as bool, add_virtual_tpm as bool, logoff_policy as string with these options: FORCE_LOGOFF or WAIT_FOR_LOGOFF
+        Available for Horizon 8 2012 and later.
 
     `disconnect_sessions(self, session_ids: list)`
     :   Disconnects user sessions.
@@ -621,6 +639,17 @@ Classes
         
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later.
+
+    `get_rds_server(self, rds_server_id: str) ‑> dict`
+    :   Gets the RDS Server information.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_rds_servers(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the RDS Servers in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later.
 
     `get_session(self, session_id: str) ‑> dict`
     :   Gets the Session information.
