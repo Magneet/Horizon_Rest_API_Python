@@ -248,3 +248,10 @@
     * Added cancel_desktop_pool_push_image
     * Added get_rds_servers
     * Added get_rds_server
+
+22-03-2021
+* Inventory Class
+    * Added get_physical_machines
+    * Added get_physical_machine
+    * Added delete_physical_machine
+    * Added add_physical_machine

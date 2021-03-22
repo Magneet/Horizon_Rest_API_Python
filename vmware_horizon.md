@@ -484,6 +484,12 @@ Classes
         Requires requires desktop_pool_id and list of of dicts where each dict has name and user_id.
         Available for Horizon 8 2006 and later.
 
+    `add_physical_machine(self, description: str, dns_name: str, operating_system: str)`
+    :   Registers the Physical Machine.
+        
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 7.11 and later.
+
     `assign_user_to_machine(self, machine_id: str, user_ids: list)`
     :   Assigns the specified users to the machine.
         
@@ -514,6 +520,11 @@ Classes
         Requires list of ids of the machines to remove 
         Optional arguments (all default to False): delete_from_multiple_pools, force_logoff and delete_from_disk
         Available for Horizon 8 2006 and later.
+
+    `delete_physical_machine(self, physical_machine_id: str)`
+    :   Deletes the Physical Machine.
+        
+        Available for Horizon 8 2012 and later.
 
     `desktop_pool_push_image(self, desktop_pool_id: str, start_time: str, add_virtual_tpm: bool = False, im_stream_id: str = '', im_tag_id: str = '', logoff_policy: str = 'WAIT_FOR_LOGOFF', parent_vm_id: str = '', snapshot_id: str = '', stop_on_first_error: bool = True)`
     :   Schedule/reschedule a request to update the image in an instant clone desktop pool
@@ -639,6 +650,17 @@ Classes
         
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later.
+
+    `get_physical_machine(self, physical_machine_id: str) ‑> dict`
+    :   Gets the Physical Machine information.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_physical_machines(self, maxpagesize: int = 100, filter: dict = '') ‑> list`
+    :   Lists the Physical Machines in the environment.
+        
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later.
 
     `get_rds_server(self, rds_server_id: str) ‑> dict`
     :   Gets the RDS Server information.

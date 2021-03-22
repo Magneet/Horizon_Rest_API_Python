@@ -1358,6 +1358,115 @@ class Inventory:
             else:
                 return response.json()
 
+    def get_physical_machines(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the Physical Machines in the environment.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later."""
+
+        def int_get_physical_machines(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                add_filter = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                response = requests.get(f'{self.url}/rest/inventory/v1/physical-machines?filter={add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v1/physical-machines?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_physical_machines(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_physical_machines(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_physical_machine(self, physical_machine_id:str) -> dict:
+        """Gets the Physical Machine information.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/physical-machines/{physical_machine_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def delete_physical_machine(self, physical_machine_id:str):
+        """Deletes the Physical Machine.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/physical-machines/{physical_machine_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def add_physical_machine(self,description: str, dns_name: str, operating_system: str):
+        """Registers the Physical Machine.
+
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 7.11 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["description"] = description
+        data["dns_name"] = dns_name
+        data["operating_system"] = operating_system
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/physical-machines/action/register', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""
