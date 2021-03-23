@@ -255,3 +255,11 @@
     * Added get_physical_machine
     * Added delete_physical_machine
     * Added add_physical_machine
+
+23-03-2021
+* Inventory Class
+    * Added get_desktop_pool_task
+    * Added get_desktop_pool_tasks
+    * Added cancel_desktop_pool_task
+    * Added delete_rds_server
+    * Added update_rds_server

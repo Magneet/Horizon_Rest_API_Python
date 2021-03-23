@@ -501,6 +501,11 @@ Classes
         
         Available for Horizon 8 2012 and later.
 
+    `cancel_desktop_pool_task(self, desktop_pool_id: str, task_id: str) ‑> dict`
+    :   Cancels the instant clone desktop pool push image task.
+        
+        Available for Horizon 8 2012 and later.
+
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
         
@@ -523,6 +528,11 @@ Classes
 
     `delete_physical_machine(self, physical_machine_id: str)`
     :   Deletes the Physical Machine.
+        
+        Available for Horizon 8 2012 and later.
+
+    `delete_rds_server(self, rds_server_id: str) ‑> dict`
+    :   Deletes the RDS Server.
         
         Available for Horizon 8 2012 and later.
 
@@ -574,6 +584,16 @@ Classes
         
         Requires id of a desktop pool
         Available for Horizon 8 2006 and later.
+
+    `get_desktop_pool_task(self, desktop_pool_id: str, task_id: str) ‑> dict`
+    :   Gets the task information on the desktop pool.
+        
+        Available for Horizon 8 2012 and later.
+
+    `get_desktop_pool_tasks(self, desktop_pool_id: str) ‑> list`
+    :   Lists the tasks on the desktop pool.
+        
+        Available for Horizon 8 2012 and later.
 
     `get_desktop_pools(self) ‑> list`
     :   Returns a list of dictionaries with all available Desktop Pools. 
@@ -781,6 +801,13 @@ Classes
         The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 8 2006 and later.
+
+    `update_rds_server(self, rds_server_id: str, max_sessions_count_configured: int, max_sessions_type_configured: str, enabled: bool = True)`
+    :   Schedule/reschedule a request to update the image in an instant clone desktop pool
+        
+        Requires the rds_server_id as string, enabled as booleanm max_sessions_count_configured as int and max_sessions_type_configured as string
+        enabled defaults to True, the options for max_sessions_type_configured are: UNLIMITED, LIMITED, UNCONFIGURED
+        Available for Horizon 8 2012 and later.
 
 `Monitor(url: str, access_token: dict)`
 :   Default object for the monitor class used for the monitoring of the various VMware Horiozn services.
