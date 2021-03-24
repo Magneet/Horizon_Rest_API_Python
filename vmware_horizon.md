@@ -741,6 +741,11 @@ Classes
         Requires a List of Machine Ids representing the machines to be recovered.
         Available for Horizon 8 2006 and later.
 
+    `recover_rds_servers(self, rds_server_ids: list) ‑> list`
+    :   Recovers the specified RDS Servers.
+        
+        Available for Horizon 8 2012 and later.
+
     `remove_global_application_entitlement_local_Application_pools(self, global_application_entitlement_id: str, application_pool_ids: list)`
     :   Removes Local Application Pools from Global Application Entitlement.
         

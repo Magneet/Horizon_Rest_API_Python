@@ -263,3 +263,10 @@
     * Added cancel_desktop_pool_task
     * Added delete_rds_server
     * Added update_rds_server
+
+24-03-2021
+* Inventory Class
+    * Added recover_rds_servers
+    * Added add_rds_server
+* Monitor Class
+    * Started work on get_desktop_pool_metrics

@@ -1379,6 +1379,33 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def recover_rds_servers(self, rds_server_ids:list) -> list:
+        """Recovers the specified RDS Servers.
+
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = rds_server_ids
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/recover', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def update_rds_server(self, rds_server_id:str, max_sessions_count_configured:int,max_sessions_type_configured:str, enabled:bool=True):
         """Schedule/reschedule a request to update the image in an instant clone desktop pool
 
@@ -1412,7 +1439,35 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def add_rds_server(self,description: str, dns_name: str, operating_system: str, farm_id: str):
+        """Registers the RDS Server.
 
+        Requires description, dns_name, operating_system and farm_id as string
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["description"] = description
+        data["dns_name"] = dns_name
+        data["farm_id"] = farm_id
+        data["operating_system"] = operating_system
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/register', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
     def get_physical_machines(self, maxpagesize:int=100, filter:dict="") -> list:
         """Lists the Physical Machines in the environment.
@@ -1890,6 +1945,33 @@ class Monitor:
         Available for Horizon 7.11 and later."""
         response = requests.get(f'{self.url}/rest/monitor/v1/true-sso', verify=False,  headers=self.access_token)
         if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pool_metrics(self, desktop_pool_ids:list) -> list:
+        """Lists metrics of desktop pools (except RDS desktop pools).
+
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = desktop_pool_ids
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/recover', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
