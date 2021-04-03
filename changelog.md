@@ -268,5 +268,21 @@
 * Inventory Class
     * Added recover_rds_servers
     * Added add_rds_server
+
+27-03-2021
 * Monitor Class
-    * Started work on get_desktop_pool_metrics
+    * Added get_desktop_pool_metrics
+
+28-03-2021
+* Config Class
+    * Added get_local_access_groups
+    * Added get_local_access_group
+* Inventory Class
+    * Added check_application_name_availability
+    * Added check_desktop_pool_name_availability
+    * Added check_farm_name_availability
+
+03-04-2021
+* External Class
+  * Added get_datastore_clusters
+  * Added compute_datastore_requirement

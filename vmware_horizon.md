@@ -31,6 +31,17 @@ Classes
         
         Available for Horizon 7.11 and later.
 
+    `get_local_access_group(self, local_access_group_id: str) ‑> dict`
+    :   Retrieves a local access group.
+        
+        Requires the id of an local access group as string
+        Available for Horizon 8 2103 and later.
+
+    `get_local_access_groups(self) ‑> list`
+    :   Lists all local access groups.
+        
+        Available for Horizon 8 2103 and later.
+
     `get_settings(self) ‑> dict`
     :   Retrieves the environment settings.
         
@@ -213,6 +224,24 @@ Classes
 
     ### Methods
 
+    `compute_datastore_requirement(self, desktop_or_farm_id: str, user_assignment: str, vcenter_id: str, pool_size: int, source: str, type: str, base_snapshot_id: str = '', base_vm_id: str = '', use_separate_replica_and_os_disk: bool = False, use_vsan: bool = False, vm_template_id: str = '') ‑> list`
+    :   Creates Instant Clone Domain Account
+        
+        Requirements:
+        base_snapshot_id : str - Required when source is INSTANT_CLONE
+        base_vm_id : string - Required when source is INSTANT_CLONE
+        desktop_or_farm_id: string
+        pool_size : int32
+        source : string - Required to be either FULL_CLONE or INSTANT_CLONE
+        type : string - Required to be DESKTOP_POOL or FARM
+        use_separate_replica_and_os_disk : boolean - Ignored for FULL_CLONE or when vSAN is used, defaults to False
+        use_vsan : boolean - defaults to False
+        user_assignment : string - Required to be DEDICATED or FLOATING
+        vcenter_id : string
+        vm_template_id : string - Required when source is FULL_CLONE
+        
+        Available for Horizon 8 2103 and later.
+
     `get_ad_domains(self) ‑> list`
     :   Lists information related to AD Domains of the environment.
         
@@ -254,6 +283,12 @@ Classes
         
         Requires vcenter_id
         Available for Horizon 7.12 and later.
+
+    `get_datastore_clusters(self, vcenter_id: str, host_or_cluster_id: str) ‑> list`
+    :   Lists all the datastore clusters from the vCenter for the given host or cluster.
+        
+        Requires host_or_cluster_id and vcenter_id
+        Available for Horizon 8 2103 and later.
 
     `get_datastore_paths(self, vcenter_id: str, datastore_id: str) ‑> list`
     :   Lists all the folder paths within a Datastore from vCenter.
@@ -490,6 +525,12 @@ Classes
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 7.11 and later.
 
+    `add_rds_server(self, description: str, dns_name: str, operating_system: str, farm_id: str)`
+    :   Registers the RDS Server.
+        
+        Requires description, dns_name, operating_system and farm_id as string
+        Available for Horizon 8 2012 and later.
+
     `assign_user_to_machine(self, machine_id: str, user_ids: list)`
     :   Assigns the specified users to the machine.
         
@@ -505,6 +546,24 @@ Classes
     :   Cancels the instant clone desktop pool push image task.
         
         Available for Horizon 8 2012 and later.
+
+    `check_application_name_availability(self, application_name: str) ‑> dict`
+    :   Checks if the given name is available for application pool creation.
+        
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later.
+
+    `check_desktop_pool_name_availability(self, desktop_pool_name: str) ‑> dict`
+    :   Checks if the given name is available for desktop pool creation.
+        
+        Requires the name of the desktop pool to test as string
+        Available for Horizon 8 2103 and later.
+
+    `check_farm_name_availability(self, farm_name: str) ‑> dict`
+    :   Checks if the given name is available for farm creation.
+        
+        Requires the name of the farm to test as string
+        Available for Horizon 8 2103 and later.
 
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
@@ -861,6 +920,11 @@ Classes
     :   Lists monitoring information related to Gateways registered in the environment.
         
         Available for Horizon 7.10 and later.
+
+    `get_desktop_pool_metrics(self, desktop_pool_ids: list) ‑> list`
+    :   Lists metrics of desktop pools (except RDS desktop pools).
+        
+        Available for Horizon 8 2012 and later.
 
     `rds_server(self, id: str) ‑> dict`
     :   Lists monitoring information related to a single RDS Server.
