@@ -1358,6 +1358,117 @@ class Inventory:
             else:
                 return response.json()
 
+    def delete_rds_server(self, rds_server_id:str) -> dict:
+        """Deletes the RDS Server.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/rds-servers/{rds_server_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def recover_rds_servers(self, rds_server_ids:list) -> list:
+        """Recovers the specified RDS Servers.
+
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = rds_server_ids
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/recover', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def update_rds_server(self, rds_server_id:str, max_sessions_count_configured:int,max_sessions_type_configured:str, enabled:bool=True):
+        """Schedule/reschedule a request to update the image in an instant clone desktop pool
+
+        Requires the rds_server_id as string, enabled as booleanm max_sessions_count_configured as int and max_sessions_type_configured as string
+        enabled defaults to True, the options for max_sessions_type_configured are: UNLIMITED, LIMITED, UNCONFIGURED
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["enabled"] = enabled
+        data["max_sessions_count_configured"] = max_sessions_count_configured
+        data["max_sessions_type_configured"] = max_sessions_type_configured
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/inventory/v1/rds-servers/{rds_server_id}', verify=False,  headers=headers, data = json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def add_rds_server(self,description: str, dns_name: str, operating_system: str, farm_id: str):
+        """Registers the RDS Server.
+
+        Requires description, dns_name, operating_system and farm_id as string
+        Available for Horizon 8 2012 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["description"] = description
+        data["dns_name"] = dns_name
+        data["farm_id"] = farm_id
+        data["operating_system"] = operating_system
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/register', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_physical_machines(self, maxpagesize:int=100, filter:dict="") -> list:
         """Lists the Physical Machines in the environment.
 
@@ -1376,7 +1487,7 @@ class Inventory:
                 else:
                     error_message = (response.json())["error_message"]
                 raise Exception(f"Error {response.status_code}: {error_message}")
-            elif response.status_code != 200:
+            elif response.status_code != 204:
                 raise Exception(f"Error {response.status_code}: {response.reason}")
             else:
                 try:
@@ -1466,6 +1577,165 @@ class Inventory:
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
+
+    def get_desktop_pool_tasks(self, desktop_pool_id:str) -> list:
+        """Lists the tasks on the desktop pool.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/tasks', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pool_task(self, desktop_pool_id:str, task_id:str) -> dict:
+        """Gets the task information on the desktop pool.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/tasks/{task_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def cancel_desktop_pool_task(self, desktop_pool_id:str, task_id:str) -> dict:
+        """Cancels the instant clone desktop pool push image task.
+
+        Available for Horizon 8 2012 and later."""
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/tasks/{task_id}/action/cancel', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_application_name_availability(self,application_name: str)-> dict:
+        """Checks if the given name is available for application pool creation.
+
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = application_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_desktop_pool_name_availability(self,desktop_pool_name: str)-> dict:
+        """Checks if the given name is available for desktop pool creation.
+
+        Requires the name of the desktop pool to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = desktop_pool_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_farm_name_availability(self,farm_name: str)-> dict:
+        """Checks if the given name is available for farm creation.
+
+        Requires the name of the farm to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = farm_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
 class Monitor:
     def __init__(self, url: str, access_token: dict):
@@ -1756,6 +2026,30 @@ class Monitor:
         Available for Horizon 7.11 and later."""
         response = requests.get(f'{self.url}/rest/monitor/v1/true-sso', verify=False,  headers=self.access_token)
         if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pool_metrics(self, desktop_pool_ids:list) -> list:
+        """Lists metrics of desktop pools (except RDS desktop pools).
+
+        Available for Horizon 8 2012 and later."""
+        urlstring='&ids='.join(desktop_pool_ids)
+        response = requests.get(f'{self.url}/rest/monitor/v1/desktop-pools/metrics?ids={urlstring}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
@@ -2088,6 +2382,37 @@ class Config:
             else:
                 return response.status
 
+    def get_local_access_groups(self) -> list:
+        """Lists all local access groups.
+
+        Available for Horizon 8 2103 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/local-access-groups', verify=False,  headers=self.access_token)
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_local_access_group(self,local_access_group_id: str) -> dict:
+        """Retrieves a local access group.
+
+        Requires the id of an local access group as string
+        Available for Horizon 8 2103 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/local-access-groups/{local_access_group_id}', verify=False,  headers=self.access_token)
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
 class External:
     def __init__(self, url: str, access_token: dict):
         """Default object for the External class for resources that are external to Horizon environment."""
@@ -2334,6 +2659,27 @@ class External:
             else:
                 return response.json()
 
+    def get_datastore_clusters(self, vcenter_id : str, host_or_cluster_id:str ) -> list:
+        """Lists all the datastore clusters from the vCenter for the given host or cluster.
+
+        Requires host_or_cluster_id and vcenter_id
+        Available for Horizon 8 2103 and later."""
+        response = requests.get(f'{self.url}/rest/external/v1/datastore-clusters?host_or_cluster_id={host_or_cluster_id}&vcenter_id={vcenter_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_datastore_paths(self, vcenter_id : str, datastore_id:str ) -> list:
         """Lists all the folder paths within a Datastore from vCenter.
 
@@ -2475,6 +2821,69 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def compute_datastore_requirement(self,desktop_or_farm_id: str, user_assignment : str, vcenter_id : str, pool_size : int, source : str, type : str, base_snapshot_id: str="",base_vm_id: str="", use_separate_replica_and_os_disk : bool=False, use_vsan : bool = False, vm_template_id : str = "") -> list:
+        """Creates Instant Clone Domain Account
+
+        Requirements:
+        base_snapshot_id : str - Required when source is INSTANT_CLONE
+        base_vm_id : string - Required when source is INSTANT_CLONE
+        desktop_or_farm_id: string
+        pool_size : int32
+        source : string - Required to be either FULL_CLONE or INSTANT_CLONE
+        type : string - Required to be DESKTOP_POOL or FARM
+        use_separate_replica_and_os_disk : boolean - Ignored for FULL_CLONE or when vSAN is used, defaults to False
+        use_vsan : boolean - defaults to False
+        user_assignment : string - Required to be DEDICATED or FLOATING
+        vcenter_id : string
+        vm_template_id : string - Required when source is FULL_CLONE
+
+        Available for Horizon 8 2103 and later."""
+        if source !="FULL_CLONE" and source !="INSTANT_CLONE":
+            raise Exception(f"Error: source has to be either FULL_CLONE or INSTANT_CLONE")
+        if type !="DESKTOP_POOL" and type !="FARM":
+            raise Exception(f"Error: type has to be either DESKTOP_POOL or FARM")
+        if user_assignment !="DEDICATED" and user_assignment !="FLOATING":
+            raise Exception(f"Error: user_assignment has to be either DEDICATED or FLOATING")
+        if source == "FULL_CLONE" and vm_template_id == "":
+            raise Exception(f"Error: When type is FULL_CLONE vm_template_id is required ")
+        if source == "INSTANT_CLONE" and (base_vm_id == "" or base_snapshot_id == ""):
+            raise Exception(f"Error: When type is INSTANT_CLONE both base_vm_id and base_snapshot_id are required ")
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        if source == "INSTANT_CLONE":
+            data["base_snapshot_id"] = base_snapshot_id
+            data["base_vm_id"] = base_vm_id
+        data["id"] = desktop_or_farm_id
+        data["pool_size"] = pool_size
+        data["source"] = source
+        data["type"] = type
+        data["use_separate_replica_and_os_disk"] = use_separate_replica_and_os_disk
+        data["use_vsan"] = use_vsan
+        data["user_assignment"] = user_assignment
+        data["vcenter_id"] = vcenter_id
+        if type == "FULL_CLONE":
+            data["vm_template_id"] = vm_template_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/external/v1/datastores/action/compute-requirements', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+
 
 class Entitlements:
     def __init__(self, url: str, access_token: dict):

@@ -255,3 +255,34 @@
     * Added get_physical_machine
     * Added delete_physical_machine
     * Added add_physical_machine
+
+23-03-2021
+* Inventory Class
+    * Added get_desktop_pool_task
+    * Added get_desktop_pool_tasks
+    * Added cancel_desktop_pool_task
+    * Added delete_rds_server
+    * Added update_rds_server
+
+24-03-2021
+* Inventory Class
+    * Added recover_rds_servers
+    * Added add_rds_server
+
+27-03-2021
+* Monitor Class
+    * Added get_desktop_pool_metrics
+
+28-03-2021
+* Config Class
+    * Added get_local_access_groups
+    * Added get_local_access_group
+* Inventory Class
+    * Added check_application_name_availability
+    * Added check_desktop_pool_name_availability
+    * Added check_farm_name_availability
+
+03-04-2021
+* External Class
+  * Added get_datastore_clusters
+  * Added compute_datastore_requirement
