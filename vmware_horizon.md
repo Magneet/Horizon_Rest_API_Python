@@ -571,6 +571,12 @@ Classes
         Requires application_pool_id as a str
         Available for Horizon 8 2006 and later.
 
+    `delete_application_pool_icon(self, application_pool_id: str)`
+    :   Removes the associated custom icon from the application pool.
+        
+        Requires application_pool_id as string
+        Available for Horizon 8 2103 and later.
+
     `delete_machine(self, machine_id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
     :   Deletes a machine.
         
@@ -782,6 +788,13 @@ Classes
         Requires a List of Machine Ids representing the machines to be taken out of maintenance mode.
         Available for Horizon 8 2006 and later.
 
+    `new_application_icon(self, data: str, height: str, width: str) ‑> dict`
+    :   Creates an application icon.
+        
+        Requires data, width and height as string
+        Data needs to be Base64 encoded binary data of the image
+        Available for Horizon 8 2103 and later.
+
     `new_application_pool(self, application_pool_data: dict)`
     :   Creates an application pool.
         
@@ -852,6 +865,12 @@ Classes
         
         Requires list of session ids, message type (INFO,WARNING,ERROR) and a message
         Available for Horizon 8 2006 and later.
+
+    `set_application_pool_icon(self, application_pool_id: str, icon_id: str)`
+    :   Associates a custom icon to the application pool.
+        
+        Requires application_pool_id and asicon_id as string
+        Available for Horizon 8 2103 and later.
 
     `unassign_user_to_machine(self, machine_id: str, user_ids: list)`
     :   Unassigns the specified users to the machine.

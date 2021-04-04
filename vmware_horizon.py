@@ -783,6 +783,92 @@ class Inventory:
             else:
                 return response.json()
 
+    def new_application_icon(self,data : str,height : str,width : str) -> dict:
+        """Creates an application icon.
+
+        Requires data, width and height as string
+        Data needs to be Base64 encoded binary data of the image
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        raw_data={}
+        raw_data["data"] = data
+        raw_data["height"] = height
+        raw_data["width"] = width
+        json_data = json.dumps(raw_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-icons', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def set_application_pool_icon(self,application_pool_id : str, icon_id : str):
+        """Associates a custom icon to the application pool.
+
+        Requires application_pool_id and asicon_id as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data={}
+        data["icon_id"] = icon_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}/action/add-custom-icon', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_application_pool_icon(self,application_pool_id : str):
+        """Removes the associated custom icon from the application pool.
+
+        Requires application_pool_id as string
+        Available for Horizon 8 2103 and later."""
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}/action/remove-custom-icon', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
     def remove_machines(self, desktop_pool_id:str,machine_ids: list):
         """Removes machines from the given manual desktop pool.
 

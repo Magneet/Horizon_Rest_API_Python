@@ -284,5 +284,11 @@
 
 03-04-2021
 * External Class
-  * Added get_datastore_clusters
-  * Added compute_datastore_requirement
+    * Added get_datastore_clusters
+    * Added compute_datastore_requirement
+
+04-04-2021
+* inventory Class
+    * Added new_application_icon
+    * Added set_application_pool_icon
+    * Added delete_application_pool_icon
