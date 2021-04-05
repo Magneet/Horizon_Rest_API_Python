@@ -292,3 +292,13 @@
     * Added new_application_icon
     * Added set_application_pool_icon
     * Added delete_application_pool_icon
+
+05-04-2021
+* fixed some line breaks
+* Inventory Class
+    * Added new_farm
+    * Added update_farm
+    * Added delete_farm
+    * Added check_machine_name_availability
+    * Added check_farm_name_availability
+    * Added check_rds_server_name_availability

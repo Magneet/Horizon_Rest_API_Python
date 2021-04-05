@@ -565,6 +565,18 @@ Classes
         Requires the name of the farm to test as string
         Available for Horizon 8 2103 and later.
 
+    `check_machine_name_availability(self, machine_name: str) ‑> dict`
+    :   Checks if the given name is available for machine creation.
+        
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later.
+
+    `check_rds_server_name_availability(self, machine_name: str) ‑> dict`
+    :   Checks if the given prefix is available for RDS Server creation.
+        
+        Requires the name of the RDS Server to test as string
+        Available for Horizon 8 2103 and later.
+
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
         
@@ -575,6 +587,12 @@ Classes
     :   Removes the associated custom icon from the application pool.
         
         Requires application_pool_id as string
+        Available for Horizon 8 2103 and later.
+
+    `delete_farm(self, farm_id: str) ‑> list`
+    :   Deletes a farm.
+        
+        Requires id of a RDS Farm
         Available for Horizon 8 2103 and later.
 
     `delete_machine(self, machine_id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
@@ -801,6 +819,12 @@ Classes
         Requires application_pool_data as a dict
         Available for Horizon 8 2006 and later.
 
+    `new_farm(self, farm_data: dict)`
+    :   Creates a farm.
+        
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later.
+
     `rebuild_machines(self, machine_ids: list)`
     :   Rebuilds the specified machines.
         
@@ -884,6 +908,12 @@ Classes
         The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 8 2006 and later.
+
+    `update_farm(self, farm_data: dict, farm_id: str)`
+    :   Updates a farm.
+        
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later.
 
     `update_rds_server(self, rds_server_id: str, max_sessions_count_configured: int, max_sessions_type_configured: str, enabled: bool = True)`
     :   Schedule/reschedule a request to update the image in an instant clone desktop pool

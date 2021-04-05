@@ -185,6 +185,110 @@ class Inventory:
             else:
                 return response.json()
 
+    def new_farm(self,farm_data:dict):
+        """Creates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.post(f'{self.url}rest/inventory/v1/farms', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_farm(self,farm_data : dict, farm_id : str):
+        """Updates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.put(f'{self.url}rest/inventory/v1/farms/{farm_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_farm(self, farm_id:str) -> list:
+        """Deletes a farm.
+
+        Requires id of a RDS Farm
+        Available for Horizon 8 2103 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/farms/{farm_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_farm_name_availability(self,farm_name: str)-> dict:
+        """Checks if the given name is available for farm creation.
+
+        Requires the name of the RDS farm to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = farm_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_machine(self, machine_id:str) -> dict:
         """Gets the Machine information.
 
@@ -419,6 +523,33 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def check_machine_name_availability(self,machine_name: str)-> dict:
+        """Checks if the given name is available for machine creation.
+
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = machine_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
 
@@ -600,7 +731,6 @@ class Inventory:
 
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later."""
-
         def int_get_application_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
             if filter != "":
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
@@ -1539,6 +1669,33 @@ class Inventory:
         data["operating_system"] = operating_system
         json_data = json.dumps(data)
         response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/register', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_rds_server_name_availability(self,machine_name: str)-> dict:
+        """Checks if the given prefix is available for RDS Server creation.
+
+        Requires the name of the RDS Server to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = machine_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/check-name-availability', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
