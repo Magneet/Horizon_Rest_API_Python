@@ -302,3 +302,12 @@
     * Added check_machine_name_availability
     * Added check_farm_name_availability
     * Added check_rds_server_name_availability
+    * 
+07-04-2021
+* Config Class
+    * Added get_im_assets
+    * Added get_im_asset
+    * Added get_im_streams
+    * Added get_im_tags
+    * Added get_im_versions
+    * Added get_im_version
