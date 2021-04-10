@@ -2674,7 +2674,7 @@ class Config:
             else:
                 return response.json()
 
-    def get_im_asset(self,im_asset_id : str) ->ldictist:
+    def get_im_asset(self,im_asset_id : str) ->dict:
         """Gets image management asset.
 
         Requires im_version_id  as string
@@ -2814,6 +2814,65 @@ class Config:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def new_im_asset(self,im_stream_id : str,im_version_id : str, clone_type:str,image_type : str,status : str,vcenter_id : str, 
+        additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = "", base_snapshot_id : str = "", base_vm_id : str = "", vm_template_id: str = "" ):
+        """Creates image management asset.
+
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 7.12 and later."""
+        valid_image_type = [ "RDSH_APPS", "RDSH_DESKTOP", "VDI_DESKTOP" ]
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "REPLICATING", "RETRY_PENDING", "SPECIALIZING_VM" ]
+        valid_clone_type = [ "FULL_CLONE", "INSTANT_CLONE" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["additional_details"] = additional_details
+        if vm_template_id != "" and (base_vm_id != "" or base_snapshot_id != ""):
+            raise Exception("Error: either vm_template_id or base_vm_id and base_snapshot_id is required")
+        elif vm_template_id == "" and (base_vm_id == "" or base_snapshot_id == ""):
+            raise Exception("Error: Both base_vm_id and base_snapshot_id are required")
+        elif vm_template_id == "" and (base_vm_id != "" and base_snapshot_id != ""):
+            data["base_snapshot_id"] = base_snapshot_id
+            data["base_vm_id"] = base_vm_id
+        if clone_type in valid_clone_type:
+            data["clone_type"] = clone_type
+        else:
+            raise Exception(f"Error: please provide a valid clone_type from these options: {valid_clone_type}")
+        data["im_stream_id"] = im_stream_id
+        data["im_version_id"] = im_version_id
+        if image_type in valid_image_type:
+            data["image_type"] = image_type
+        else:
+            raise Exception(f"Error: please provide a valid image_type from these options: {valid_image_type}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        data["vcenter_id"] = vcenter_id
+        if vm_template_id != "":
+            data["vm_template_id"] = vm_template_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-assets', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
 
 
 class External:

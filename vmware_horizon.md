@@ -31,6 +31,43 @@ Classes
         
         Available for Horizon 7.11 and later.
 
+    `get_im_asset(self, im_asset_id: str) ‑> dict`
+    :   Gets image management asset.
+        
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later.
+
+    `get_im_assets(self, im_version_id: str) ‑> list`
+    :   Lists image management assets.
+        
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later.
+
+    `get_im_stream(self, im_stream_id: str) ‑> dict`
+    :   Gets image management stream.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_streams(self) ‑> list`
+    :   Lists image management streams.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_tag(self, im_tag_id: str) ‑> dict`
+    :   Gets image management stream.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_tags(self, im_stream_id: str) ‑> list`
+    :   Lists image management tags.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_versions(self, im_version_id: str) ‑> dict`
+    :   Gets image management version.
+        
+        Available for Horizon 7.12 and later.
+
     `get_local_access_group(self, local_access_group_id: str) ‑> dict`
     :   Retrieves a local access group.
         
@@ -72,6 +109,12 @@ Classes
         
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 7.11 and later.
+
+    `new_im_asset(self, im_stream_id: str, im_version_id: str, clone_type: str, image_type: str, status: str, vcenter_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '', base_snapshot_id: str = '', base_vm_id: str = '', vm_template_id: str = '')`
+    :   Creates image management asset.
+        
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 7.12 and later.
 
     `update_ic_domain_account(self, id: str, password: str)`
     :   Changes password for an Instant Clone Domain account
