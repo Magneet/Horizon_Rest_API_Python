@@ -2819,7 +2819,21 @@ class Config:
         additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = "", base_snapshot_id : str = "", base_vm_id : str = "", vm_template_id: str = "" ):
         """Creates image management asset.
 
-        Requires ad_domain_id, username and password in plain text.
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Choice between:
+                base_snapshot_id and base_vm_id
+                OR
+                vm_template_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
         Available for Horizon 7.12 and later."""
         valid_image_type = [ "RDSH_APPS", "RDSH_DESKTOP", "VDI_DESKTOP" ]
         valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "REPLICATING", "RETRY_PENDING", "SPECIALIZING_VM" ]
@@ -2874,6 +2888,179 @@ class Config:
             else:
                 return response.status_code
 
+    def update_im_asset(self,im_asset_id : str, clone_type:str,image_type : str,status : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates image management asset.
+
+        Requires:
+            im_assit_id as string
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_image_type = [ "RDSH_APPS", "RDSH_DESKTOP", "VDI_DESKTOP" ]
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "REPLICATING", "RETRY_PENDING", "SPECIALIZING_VM" ]
+        valid_clone_type = [ "FULL_CLONE", "INSTANT_CLONE" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["additional_details"] = additional_details
+        if clone_type in valid_clone_type:
+            data["clone_type"] = clone_type
+        else:
+            raise Exception(f"Error: please provide a valid clone_type from these options: {valid_clone_type}")
+        if image_type in valid_image_type:
+            data["image_type"] = image_type
+        else:
+            raise Exception(f"Error: please provide a valid image_type from these options: {valid_image_type}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-assets/{im_asset_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_asset(self, im_asset_id : str) -> dict:
+        """Deletes image management asset.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-assets/{im_asset_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_im_tag(self,name : str,im_stream_id : str,im_version_id : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Creates image management tag.
+
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["im_stream_id"] = im_stream_id
+        data["im_version_id"] = im_version_id
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-tags', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_im_tag(self,name : str,im_tag_id : str,im_version_id : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates image management tag.
+
+        Requires all as string:
+            im_tag_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["im_version_id"] = im_version_id
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_tag(self, im_tag_id : str) -> dict:
+        """Deletes image management tag.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
 
 class External:
     def __init__(self, url: str, access_token: dict):

@@ -315,3 +315,12 @@
 10-04-2021
 * Config Class
     * Added new_im_asset
+
+11-04-2021
+* Config Class
+    * Updated description for new_im_asset
+    * Added update_im_asset
+    * Added delete_im_asset
+    * Added new_im_tag
+    * Added update_im_tag
+    * Added delete_im_tag

@@ -15,6 +15,16 @@ Classes
         Requires id of an Instant CLone Domain account
         Available for Horizon 7.11 and later.
 
+    `delete_im_asset(self, im_asset_id: str) ‑> dict`
+    :   Deletes image management asset.
+        
+        Available for Horizon 7.12 and later.
+
+    `delete_im_tag(self, im_tag_id: str) ‑> dict`
+    :   Deletes image management tag.
+        
+        Available for Horizon 7.12 and later.
+
     `get_environment_properties(self) ‑> dict`
     :   Retrieves the environment settings.
         
@@ -113,7 +123,34 @@ Classes
     `new_im_asset(self, im_stream_id: str, im_version_id: str, clone_type: str, image_type: str, status: str, vcenter_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '', base_snapshot_id: str = '', base_vm_id: str = '', vm_template_id: str = '')`
     :   Creates image management asset.
         
-        Requires ad_domain_id, username and password in plain text.
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Choice between:
+                base_snapshot_id and base_vm_id
+                OR
+                vm_template_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `new_im_tag(self, name: str, im_stream_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Creates image management tag.
+        
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
         Available for Horizon 7.12 and later.
 
     `update_ic_domain_account(self, id: str, password: str)`
@@ -121,6 +158,34 @@ Classes
         
         Requires id of an Instant CLone Domain account and a plain text password.
         Available for Horizon 7.11 and later.
+
+    `update_im_asset(self, im_asset_id: str, clone_type: str, image_type: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates image management asset.
+        
+        Requires:
+            im_assit_id as string
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `update_im_tag(self, name: str, im_tag_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates image management tag.
+        
+        Requires all as string:
+            im_tag_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
 
     `update_settings(self, settings: dict)`
     :   Updates the settings.
