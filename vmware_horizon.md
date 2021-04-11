@@ -15,6 +15,16 @@ Classes
         Requires id of an Instant CLone Domain account
         Available for Horizon 7.11 and later.
 
+    `delete_im_asset(self, im_asset_id: str) ‑> dict`
+    :   Deletes image management asset.
+        
+        Available for Horizon 7.12 and later.
+
+    `delete_im_tag(self, im_tag_id: str) ‑> dict`
+    :   Deletes image management tag.
+        
+        Available for Horizon 7.12 and later.
+
     `get_environment_properties(self) ‑> dict`
     :   Retrieves the environment settings.
         
@@ -30,6 +40,43 @@ Classes
     :   Lists instant clone domain accounts of the environment.
         
         Available for Horizon 7.11 and later.
+
+    `get_im_asset(self, im_asset_id: str) ‑> dict`
+    :   Gets image management asset.
+        
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later.
+
+    `get_im_assets(self, im_version_id: str) ‑> list`
+    :   Lists image management assets.
+        
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later.
+
+    `get_im_stream(self, im_stream_id: str) ‑> dict`
+    :   Gets image management stream.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_streams(self) ‑> list`
+    :   Lists image management streams.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_tag(self, im_tag_id: str) ‑> dict`
+    :   Gets image management stream.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_tags(self, im_stream_id: str) ‑> list`
+    :   Lists image management tags.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_versions(self, im_version_id: str) ‑> dict`
+    :   Gets image management version.
+        
+        Available for Horizon 7.12 and later.
 
     `get_local_access_group(self, local_access_group_id: str) ‑> dict`
     :   Retrieves a local access group.
@@ -73,11 +120,72 @@ Classes
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 7.11 and later.
 
+    `new_im_asset(self, im_stream_id: str, im_version_id: str, clone_type: str, image_type: str, status: str, vcenter_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '', base_snapshot_id: str = '', base_vm_id: str = '', vm_template_id: str = '')`
+    :   Creates image management asset.
+        
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Choice between:
+                base_snapshot_id and base_vm_id
+                OR
+                vm_template_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `new_im_tag(self, name: str, im_stream_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Creates image management tag.
+        
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
     `update_ic_domain_account(self, id: str, password: str)`
     :   Changes password for an Instant Clone Domain account
         
         Requires id of an Instant CLone Domain account and a plain text password.
         Available for Horizon 7.11 and later.
+
+    `update_im_asset(self, im_asset_id: str, clone_type: str, image_type: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates image management asset.
+        
+        Requires:
+            im_assit_id as string
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `update_im_tag(self, name: str, im_tag_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates image management tag.
+        
+        Requires all as string:
+            im_tag_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
 
     `update_settings(self, settings: dict)`
     :   Updates the settings.
@@ -565,11 +673,35 @@ Classes
         Requires the name of the farm to test as string
         Available for Horizon 8 2103 and later.
 
+    `check_machine_name_availability(self, machine_name: str) ‑> dict`
+    :   Checks if the given name is available for machine creation.
+        
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later.
+
+    `check_rds_server_name_availability(self, machine_name: str) ‑> dict`
+    :   Checks if the given prefix is available for RDS Server creation.
+        
+        Requires the name of the RDS Server to test as string
+        Available for Horizon 8 2103 and later.
+
     `delete_application_pool(self, application_pool_id: str)`
     :   Deletes an application pool.
         
         Requires application_pool_id as a str
         Available for Horizon 8 2006 and later.
+
+    `delete_application_pool_icon(self, application_pool_id: str)`
+    :   Removes the associated custom icon from the application pool.
+        
+        Requires application_pool_id as string
+        Available for Horizon 8 2103 and later.
+
+    `delete_farm(self, farm_id: str) ‑> list`
+    :   Deletes a farm.
+        
+        Requires id of a RDS Farm
+        Available for Horizon 8 2103 and later.
 
     `delete_machine(self, machine_id: str, delete_from_multiple_pools: bool = False, force_logoff: bool = False, delete_from_disk: bool = False)`
     :   Deletes a machine.
@@ -782,11 +914,24 @@ Classes
         Requires a List of Machine Ids representing the machines to be taken out of maintenance mode.
         Available for Horizon 8 2006 and later.
 
+    `new_application_icon(self, data: str, height: str, width: str) ‑> dict`
+    :   Creates an application icon.
+        
+        Requires data, width and height as string
+        Data needs to be Base64 encoded binary data of the image
+        Available for Horizon 8 2103 and later.
+
     `new_application_pool(self, application_pool_data: dict)`
     :   Creates an application pool.
         
         Requires application_pool_data as a dict
         Available for Horizon 8 2006 and later.
+
+    `new_farm(self, farm_data: dict)`
+    :   Creates a farm.
+        
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later.
 
     `rebuild_machines(self, machine_ids: list)`
     :   Rebuilds the specified machines.
@@ -853,6 +998,12 @@ Classes
         Requires list of session ids, message type (INFO,WARNING,ERROR) and a message
         Available for Horizon 8 2006 and later.
 
+    `set_application_pool_icon(self, application_pool_id: str, icon_id: str)`
+    :   Associates a custom icon to the application pool.
+        
+        Requires application_pool_id and asicon_id as string
+        Available for Horizon 8 2103 and later.
+
     `unassign_user_to_machine(self, machine_id: str, user_ids: list)`
     :   Unassigns the specified users to the machine.
         
@@ -865,6 +1016,12 @@ Classes
         The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
         Requires ad_domain_id, username and password in plain text.
         Available for Horizon 8 2006 and later.
+
+    `update_farm(self, farm_data: dict, farm_id: str)`
+    :   Updates a farm.
+        
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later.
 
     `update_rds_server(self, rds_server_id: str, max_sessions_count_configured: int, max_sessions_type_configured: str, enabled: bool = True)`
     :   Schedule/reschedule a request to update the image in an instant clone desktop pool

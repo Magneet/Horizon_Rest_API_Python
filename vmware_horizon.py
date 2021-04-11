@@ -185,6 +185,110 @@ class Inventory:
             else:
                 return response.json()
 
+    def new_farm(self,farm_data:dict):
+        """Creates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.post(f'{self.url}rest/inventory/v1/farms', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_farm(self,farm_data : dict, farm_id : str):
+        """Updates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.put(f'{self.url}rest/inventory/v1/farms/{farm_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_farm(self, farm_id:str) -> list:
+        """Deletes a farm.
+
+        Requires id of a RDS Farm
+        Available for Horizon 8 2103 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/farms/{farm_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_farm_name_availability(self,farm_name: str)-> dict:
+        """Checks if the given name is available for farm creation.
+
+        Requires the name of the RDS farm to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = farm_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_machine(self, machine_id:str) -> dict:
         """Gets the Machine information.
 
@@ -419,6 +523,33 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def check_machine_name_availability(self,machine_name: str)-> dict:
+        """Checks if the given name is available for machine creation.
+
+        Requires the name of the application to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = machine_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/machines/action/check-name-availability', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def get_sessions(self, maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
 
@@ -600,7 +731,6 @@ class Inventory:
 
         For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
         Available for Horizon 8 2006 and later."""
-
         def int_get_application_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
             if filter != "":
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
@@ -782,6 +912,92 @@ class Inventory:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def new_application_icon(self,data : str,height : str,width : str) -> dict:
+        """Creates an application icon.
+
+        Requires data, width and height as string
+        Data needs to be Base64 encoded binary data of the image
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        raw_data={}
+        raw_data["data"] = data
+        raw_data["height"] = height
+        raw_data["width"] = width
+        json_data = json.dumps(raw_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-icons', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def set_application_pool_icon(self,application_pool_id : str, icon_id : str):
+        """Associates a custom icon to the application pool.
+
+        Requires application_pool_id and asicon_id as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data={}
+        data["icon_id"] = icon_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}/action/add-custom-icon', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_application_pool_icon(self,application_pool_id : str):
+        """Removes the associated custom icon from the application pool.
+
+        Requires application_pool_id as string
+        Available for Horizon 8 2103 and later."""
+        response = requests.post(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}/action/remove-custom-icon', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
 
     def remove_machines(self, desktop_pool_id:str,machine_ids: list):
         """Removes machines from the given manual desktop pool.
@@ -1453,6 +1669,33 @@ class Inventory:
         data["operating_system"] = operating_system
         json_data = json.dumps(data)
         response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/register', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def check_rds_server_name_availability(self,machine_name: str)-> dict:
+        """Checks if the given prefix is available for RDS Server creation.
+
+        Requires the name of the RDS Server to test as string
+        Available for Horizon 8 2103 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["name"] = machine_name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/rds-servers/action/check-name-availability', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -2273,7 +2516,6 @@ class Config:
             else:
                 error_key = key
                 raise Exception(f"{error_key} is not a valid setting")
-
         json_data = json.dumps(config)
         response = requests.put(f'{self.url}/rest/config/v1/settings/general', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
@@ -2304,7 +2546,6 @@ class Config:
             else:
                 error_key = key
                 raise Exception(f"{error_key} is not a valid setting")
-
         json_data = json.dumps(config)
         response = requests.put(f'{self.url}/rest/config/v1/settings/feature', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
@@ -2366,7 +2607,6 @@ class Config:
             else:
                 error_key = key
                 raise Exception(f"{error_key} is not a valid setting")
-
         json_data = json.dumps(config)
         response = requests.put(f'{self.url}/rest/config/v1/settings', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
@@ -2404,6 +2644,415 @@ class Config:
         Available for Horizon 8 2103 and later."""
         response = requests.get(f'{self.url}/rest/config/v1/local-access-groups/{local_access_group_id}', verify=False,  headers=self.access_token)
         if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_assets(self,im_version_id : str) ->list:
+        """Lists image management assets.
+
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-assets?im_version_id={im_version_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_asset(self,im_asset_id : str) ->dict:
+        """Gets image management asset.
+
+        Requires im_version_id  as string
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-assets/{im_asset_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_streams(self) -> list:
+        """Lists image management streams.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-streams', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_stream(self, im_stream_id : str) -> dict:
+        """Gets image management stream.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-streams/{im_stream_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_tags(self, im_stream_id : str) -> list:
+        """Lists image management tags.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-tags?im_stream_id={im_stream_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_tag(self, im_tag_id : str) -> dict:
+        """Gets image management stream.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_versions(self, im_stream_id : str) -> list:
+        """Lists image management versions.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-versions?im_stream_id={im_stream_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_im_versions(self, im_version_id : str) -> dict:
+        """Gets image management version.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/im-versions/{im_version_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_im_asset(self,im_stream_id : str,im_version_id : str, clone_type:str,image_type : str,status : str,vcenter_id : str, 
+        additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = "", base_snapshot_id : str = "", base_vm_id : str = "", vm_template_id: str = "" ):
+        """Creates image management asset.
+
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Choice between:
+                base_snapshot_id and base_vm_id
+                OR
+                vm_template_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_image_type = [ "RDSH_APPS", "RDSH_DESKTOP", "VDI_DESKTOP" ]
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "REPLICATING", "RETRY_PENDING", "SPECIALIZING_VM" ]
+        valid_clone_type = [ "FULL_CLONE", "INSTANT_CLONE" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["additional_details"] = additional_details
+        if vm_template_id != "" and (base_vm_id != "" or base_snapshot_id != ""):
+            raise Exception("Error: either vm_template_id or base_vm_id and base_snapshot_id is required")
+        elif vm_template_id == "" and (base_vm_id == "" or base_snapshot_id == ""):
+            raise Exception("Error: Both base_vm_id and base_snapshot_id are required")
+        elif vm_template_id == "" and (base_vm_id != "" and base_snapshot_id != ""):
+            data["base_snapshot_id"] = base_snapshot_id
+            data["base_vm_id"] = base_vm_id
+        if clone_type in valid_clone_type:
+            data["clone_type"] = clone_type
+        else:
+            raise Exception(f"Error: please provide a valid clone_type from these options: {valid_clone_type}")
+        data["im_stream_id"] = im_stream_id
+        data["im_version_id"] = im_version_id
+        if image_type in valid_image_type:
+            data["image_type"] = image_type
+        else:
+            raise Exception(f"Error: please provide a valid image_type from these options: {valid_image_type}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        data["vcenter_id"] = vcenter_id
+        if vm_template_id != "":
+            data["vm_template_id"] = vm_template_id
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-assets', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_im_asset(self,im_asset_id : str, clone_type:str,image_type : str,status : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates image management asset.
+
+        Requires:
+            im_assit_id as string
+            clone_type : either FULL_CLONE or INSTANT_CLONE
+            image_type : RDSH_APPS, RDSH_DESKTOP or VDI_DESKTOP"
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, REPLICATING, RETRY_PENDING or SPECIALIZING_VM
+            vcenter_id
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_image_type = [ "RDSH_APPS", "RDSH_DESKTOP", "VDI_DESKTOP" ]
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "REPLICATING", "RETRY_PENDING", "SPECIALIZING_VM" ]
+        valid_clone_type = [ "FULL_CLONE", "INSTANT_CLONE" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["additional_details"] = additional_details
+        if clone_type in valid_clone_type:
+            data["clone_type"] = clone_type
+        else:
+            raise Exception(f"Error: please provide a valid clone_type from these options: {valid_clone_type}")
+        if image_type in valid_image_type:
+            data["image_type"] = image_type
+        else:
+            raise Exception(f"Error: please provide a valid image_type from these options: {valid_image_type}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-assets/{im_asset_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_asset(self, im_asset_id : str) -> dict:
+        """Deletes image management asset.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-assets/{im_asset_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_im_tag(self,name : str,im_stream_id : str,im_version_id : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Creates image management tag.
+
+        Requires all as string:
+            im_stream_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["im_stream_id"] = im_stream_id
+        data["im_version_id"] = im_version_id
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-tags', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_im_tag(self,name : str,im_tag_id : str,im_version_id : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates image management tag.
+
+        Requires all as string:
+            im_tag_id
+            im_version_id
+            name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["im_version_id"] = im_version_id
+        data["name"] = name
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_tag(self, im_tag_id : str) -> dict:
+        """Deletes image management tag.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
@@ -2882,8 +3531,6 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
-
-
 
 class Entitlements:
     def __init__(self, url: str, access_token: dict):

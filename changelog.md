@@ -284,5 +284,43 @@
 
 03-04-2021
 * External Class
-  * Added get_datastore_clusters
-  * Added compute_datastore_requirement
+    * Added get_datastore_clusters
+    * Added compute_datastore_requirement
+
+04-04-2021
+* inventory Class
+    * Added new_application_icon
+    * Added set_application_pool_icon
+    * Added delete_application_pool_icon
+
+05-04-2021
+* fixed some line breaks
+* Inventory Class
+    * Added new_farm
+    * Added update_farm
+    * Added delete_farm
+    * Added check_machine_name_availability
+    * Added check_farm_name_availability
+    * Added check_rds_server_name_availability
+
+07-04-2021
+* Config Class
+    * Added get_im_assets
+    * Added get_im_asset
+    * Added get_im_streams
+    * Added get_im_tags
+    * Added get_im_versions
+    * Added get_im_version
+
+10-04-2021
+* Config Class
+    * Added new_im_asset
+
+11-04-2021
+* Config Class
+    * Updated description for new_im_asset
+    * Added update_im_asset
+    * Added delete_im_asset
+    * Added new_im_tag
+    * Added update_im_tag
+    * Added delete_im_tag
