@@ -334,3 +334,7 @@
     * Added new_im_version
     * Added update_im_version
     * Added delete_im_version
+
+13-04-2020
+* Inventory Class
+    * Small fixes to new_farm
