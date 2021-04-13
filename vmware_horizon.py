@@ -193,12 +193,13 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(farm_data)
-        response = requests.post(f'{self.url}rest/inventory/v1/farms', verify=False,  headers=headers, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 401:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code == 403:
@@ -2795,7 +2796,7 @@ class Config:
             else:
                 return response.json()
 
-    def get_im_versions(self, im_version_id : str) -> dict:
+    def get_im_version(self, im_version_id : str) -> dict:
         """Gets image management version.
 
         Available for Horizon 7.12 and later."""
@@ -2943,7 +2944,7 @@ class Config:
             else:
                 return response.status_code
 
-    def delete_im_asset(self, im_asset_id : str) -> dict:
+    def delete_im_asset(self, im_asset_id : str):
         """Deletes image management asset.
 
         Available for Horizon 7.12 and later."""
@@ -3042,11 +3043,268 @@ class Config:
             else:
                 return response.status_code
 
-    def delete_im_tag(self, im_tag_id : str) -> dict:
+    def delete_im_tag(self, im_tag_id : str):
         """Deletes image management tag.
 
         Available for Horizon 7.12 and later."""
         response = requests.delete(f'{self.url}/rest/config/v1/im-tags/{im_tag_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_im_stream(self,description : str,name : str, operating_system:str,publisher : str,source : str,status : str, 
+        additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Creates image management stream.
+
+        Requires all as string:
+            description
+            name
+            operating_system :  UNKNOWN, WINDOWS_XP, WINDOWS_VISTA, WINDOWS_7, WINDOWS_8, WINDOWS_10, WINDOWS_SERVER_2003,
+                                WINDOWS_SERVER_2008, WINDOWS_SERVER_2008_R2, WINDOWS_SERVER_2012, WINDOWS_SERVER_2012_R2,
+                                WINDOWS_SERVER_2016_OR_ABOVE, LINUX_OTHER, LINUX_SERVER_OTHER, LINUX_UBUNTU, LINUX_RHEL, LINUX_SUSE, LINUX_CENTOS
+            status : AVAILABLE, DELETED, DISABLED, FAILED, IN_PROGRESS, PARTIALLY_AVAILABLE, PENDING
+            publisher
+            source : MARKET_PLACE, UPLOADED, COPIED_FROM_STREAM, COPIED_FROM_VERSION
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_operating_system =    [ "UNKNOWN", "WINDOWS_XP", "WINDOWS_VISTA", "WINDOWS_7", "WINDOWS_8", "WINDOWS_10", "WINDOWS_SERVER_2003", 
+                                    "WINDOWS_SERVER_2008", "WINDOWS_SERVER_2008_R2", "WINDOWS_SERVER_2012", "WINDOWS_SERVER_2012_R2", "WINDOWS_SERVER_2016_OR_ABOVE", 
+                                    "LINUX_OTHER", "LINUX_SERVER_OTHER", "LINUX_UBUNTU", "LINUX_RHEL", "LINUX_SUSE", "LINUX_CENTOS" ]
+        valid_status = [ "AVAILABLE", "DELETED", "DISABLED", "FAILED", "IN_PROGRESS", "PARTIALLY_AVAILABLE", "PENDING" ]
+        valid_source = [ "MARKET_PLACE", "UPLOADED", "COPIED_FROM_STREAM", "COPIED_FROM_VERSION" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["description"] = description
+        data["name"] = name
+        if operating_system in valid_operating_system:
+            data["operating_system"] = operating_system
+        else:
+            raise Exception(f"Error: please provide a valid operating_system from these options: {valid_operating_system}")
+        data["publisher"] = publisher
+        if source in valid_source:
+            data["source"] = source
+        else:
+            raise Exception(f"Error: please provide a valid source from these options: {valid_source}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-streams', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_im_stream(self,im_stream_id : str, description : str,name : str, operating_system:str,publisher : str,source : str,status : str, 
+        additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates image management stream.
+
+        Requires all as string:
+            description
+            name
+            operating_system :  UNKNOWN, WINDOWS_XP, WINDOWS_VISTA, WINDOWS_7, WINDOWS_8, WINDOWS_10, WINDOWS_SERVER_2003,
+                                WINDOWS_SERVER_2008, WINDOWS_SERVER_2008_R2, WINDOWS_SERVER_2012, WINDOWS_SERVER_2012_R2,
+                                WINDOWS_SERVER_2016_OR_ABOVE, LINUX_OTHER, LINUX_SERVER_OTHER, LINUX_UBUNTU, LINUX_RHEL, LINUX_SUSE, LINUX_CENTOS
+            status : AVAILABLE, DELETED, DISABLED, FAILED, IN_PROGRESS, PARTIALLY_AVAILABLE, PENDING
+            publisher
+            source : MARKET_PLACE, UPLOADED, COPIED_FROM_STREAM, COPIED_FROM_VERSION
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_operating_system =    [ "UNKNOWN", "WINDOWS_XP", "WINDOWS_VISTA", "WINDOWS_7", "WINDOWS_8", "WINDOWS_10", "WINDOWS_SERVER_2003", 
+                                    "WINDOWS_SERVER_2008", "WINDOWS_SERVER_2008_R2", "WINDOWS_SERVER_2012", "WINDOWS_SERVER_2012_R2", "WINDOWS_SERVER_2016_OR_ABOVE", 
+                                    "LINUX_OTHER", "LINUX_SERVER_OTHER", "LINUX_UBUNTU", "LINUX_RHEL", "LINUX_SUSE", "LINUX_CENTOS" ]
+        valid_status = [ "AVAILABLE", "DELETED", "DISABLED", "FAILED", "IN_PROGRESS", "PARTIALLY_AVAILABLE", "PENDING" ]
+        valid_source = [ "MARKET_PLACE", "UPLOADED", "COPIED_FROM_STREAM", "COPIED_FROM_VERSION" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["description"] = description
+        data["name"] = name
+        if operating_system in valid_operating_system:
+            data["operating_system"] = operating_system
+        else:
+            raise Exception(f"Error: please provide a valid operating_system from these options: {valid_operating_system}")
+        data["publisher"] = publisher
+        if source in valid_source:
+            data["source"] = source
+        else:
+            raise Exception(f"Error: please provide a valid source from these options: {valid_source}")
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-streams/{im_stream_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_stream(self, im_stream_id : str):
+        """Deletes image management stream.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-streams/{im_stream_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_im_version(self,description : str,name : str, im_stream_id : str,status : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Creates image management version.
+
+        Requires all as string:
+            description
+            name
+            im_stream_id
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, PARTIALLY_AVAILABLE, PUBLISHING, REPLICATING
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "PARTIALLY_AVAILABLE", "PUBLISHING", "REPLICATING" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["description"] = description
+        data["im_stream_id"] = im_stream_id
+        data["name"] = name
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/im-versions', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_im_version(self,description : str,name : str, im_version_id : str,status : str, additional_details_1:str = "", additional_details_2:str = "", additional_details_3:str = ""):
+        """Updates] image management version.
+
+        Requires all as string:
+            description
+            name
+            im_stream_id
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, PARTIALLY_AVAILABLE, PUBLISHING, REPLICATING
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later."""
+        valid_status = [ "AVAILABLE", "DEPLOYING_VM", "DEPLOYMENT_DONE", "DELETED", "DISABLED", "FAILED", "PARTIALLY_AVAILABLE", "PUBLISHING", "REPLICATING" ]
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        additional_details = {}
+        additional_details["additionalProp1"] = additional_details_1
+        additional_details["additionalProp2"] = additional_details_2
+        additional_details["additionalProp3"] = additional_details_3
+        data["description"] = description
+        data["name"] = name
+        if status in valid_status:
+            data["status"] = status
+        else:
+            raise Exception(f"Error: please provide a valid status from these options: {valid_status}")
+        json_data = json.dumps(data)
+        response = requests.put(f'{self.url}/rest/config/v1/im-versions/{im_version_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_im_version(self, im_version_id : str):
+        """Deletes image management version.
+
+        Available for Horizon 7.12 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/im-versions/{im_version_id}', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")

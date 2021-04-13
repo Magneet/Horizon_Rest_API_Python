@@ -15,13 +15,23 @@ Classes
         Requires id of an Instant CLone Domain account
         Available for Horizon 7.11 and later.
 
-    `delete_im_asset(self, im_asset_id: str) ‑> dict`
+    `delete_im_asset(self, im_asset_id: str)`
     :   Deletes image management asset.
         
         Available for Horizon 7.12 and later.
 
-    `delete_im_tag(self, im_tag_id: str) ‑> dict`
+    `delete_im_stream(self, im_stream_id: str)`
+    :   Deletes image management stream.
+        
+        Available for Horizon 7.12 and later.
+
+    `delete_im_tag(self, im_tag_id: str)`
     :   Deletes image management tag.
+        
+        Available for Horizon 7.12 and later.
+
+    `delete_im_version(self, im_version_id: str)`
+    :   Deletes image management version.
         
         Available for Horizon 7.12 and later.
 
@@ -73,8 +83,13 @@ Classes
         
         Available for Horizon 7.12 and later.
 
-    `get_im_versions(self, im_version_id: str) ‑> dict`
+    `get_im_version(self, im_version_id: str) ‑> dict`
     :   Gets image management version.
+        
+        Available for Horizon 7.12 and later.
+
+    `get_im_versions(self, im_stream_id: str) ‑> list`
+    :   Lists image management versions.
         
         Available for Horizon 7.12 and later.
 
@@ -140,6 +155,24 @@ Classes
                 additional_details_3
         Available for Horizon 7.12 and later.
 
+    `new_im_stream(self, description: str, name: str, operating_system: str, publisher: str, source: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Creates image management stream.
+        
+        Requires all as string:
+            description
+            name
+            operating_system :  UNKNOWN, WINDOWS_XP, WINDOWS_VISTA, WINDOWS_7, WINDOWS_8, WINDOWS_10, WINDOWS_SERVER_2003,
+                                WINDOWS_SERVER_2008, WINDOWS_SERVER_2008_R2, WINDOWS_SERVER_2012, WINDOWS_SERVER_2012_R2,
+                                WINDOWS_SERVER_2016_OR_ABOVE, LINUX_OTHER, LINUX_SERVER_OTHER, LINUX_UBUNTU, LINUX_RHEL, LINUX_SUSE, LINUX_CENTOS
+            status : AVAILABLE, DELETED, DISABLED, FAILED, IN_PROGRESS, PARTIALLY_AVAILABLE, PENDING
+            publisher
+            source : MARKET_PLACE, UPLOADED, COPIED_FROM_STREAM, COPIED_FROM_VERSION
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
     `new_im_tag(self, name: str, im_stream_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
     :   Creates image management tag.
         
@@ -147,6 +180,20 @@ Classes
             im_stream_id
             im_version_id
             name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `new_im_version(self, description: str, name: str, im_stream_id: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Creates image management version.
+        
+        Requires all as string:
+            description
+            name
+            im_stream_id
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, PARTIALLY_AVAILABLE, PUBLISHING, REPLICATING
             Optional:
                 additional_details_1
                 additional_details_2
@@ -174,6 +221,24 @@ Classes
                 additional_details_3
         Available for Horizon 7.12 and later.
 
+    `update_im_stream(self, im_stream_id: str, description: str, name: str, operating_system: str, publisher: str, source: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates image management stream.
+        
+        Requires all as string:
+            description
+            name
+            operating_system :  UNKNOWN, WINDOWS_XP, WINDOWS_VISTA, WINDOWS_7, WINDOWS_8, WINDOWS_10, WINDOWS_SERVER_2003,
+                                WINDOWS_SERVER_2008, WINDOWS_SERVER_2008_R2, WINDOWS_SERVER_2012, WINDOWS_SERVER_2012_R2,
+                                WINDOWS_SERVER_2016_OR_ABOVE, LINUX_OTHER, LINUX_SERVER_OTHER, LINUX_UBUNTU, LINUX_RHEL, LINUX_SUSE, LINUX_CENTOS
+            status : AVAILABLE, DELETED, DISABLED, FAILED, IN_PROGRESS, PARTIALLY_AVAILABLE, PENDING
+            publisher
+            source : MARKET_PLACE, UPLOADED, COPIED_FROM_STREAM, COPIED_FROM_VERSION
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
     `update_im_tag(self, name: str, im_tag_id: str, im_version_id: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
     :   Updates image management tag.
         
@@ -181,6 +246,20 @@ Classes
             im_tag_id
             im_version_id
             name
+            Optional:
+                additional_details_1
+                additional_details_2
+                additional_details_3
+        Available for Horizon 7.12 and later.
+
+    `update_im_version(self, description: str, name: str, im_version_id: str, status: str, additional_details_1: str = '', additional_details_2: str = '', additional_details_3: str = '')`
+    :   Updates] image management version.
+        
+        Requires all as string:
+            description
+            name
+            im_stream_id
+            status : AVAILABLE, DEPLOYING_VM, DEPLOYMENT_DONE, DELETED, DISABLED, FAILED, PARTIALLY_AVAILABLE, PUBLISHING, REPLICATING
             Optional:
                 additional_details_1
                 additional_details_2
