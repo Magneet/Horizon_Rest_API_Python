@@ -199,7 +199,7 @@ class Inventory:
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
             error_message = (response.json())["error_message"]
-            raise Exception(f"Error {response.status_code}: {error_message}")
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code == 401:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code == 403:
@@ -229,7 +229,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code == 401:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code == 403:
@@ -592,7 +593,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -616,7 +618,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -640,7 +643,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -664,7 +668,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -688,7 +693,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -716,7 +722,8 @@ class Inventory:
             error_message = (response.json())["error_messages"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -775,7 +782,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code == 403:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code != 200:
@@ -855,7 +863,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -965,7 +974,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -989,7 +999,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1013,7 +1024,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1037,7 +1049,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1061,7 +1074,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1085,7 +1099,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1109,7 +1124,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1194,7 +1210,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 201:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1239,7 +1256,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1286,7 +1304,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1394,7 +1413,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -1441,7 +1461,8 @@ class Inventory:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2380,7 +2401,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2401,7 +2423,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2664,7 +2687,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2685,7 +2709,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2705,7 +2730,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2725,7 +2751,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2745,7 +2772,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2765,7 +2793,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2785,7 +2814,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2805,7 +2835,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -2953,7 +2984,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3052,7 +3084,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3198,7 +3231,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3309,7 +3343,8 @@ class Config:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 204:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3362,7 +3397,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3385,7 +3421,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3408,7 +3445,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3430,7 +3468,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3451,7 +3490,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3472,7 +3512,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3534,7 +3575,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3555,7 +3597,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3576,7 +3619,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3597,7 +3641,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3624,7 +3669,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3646,7 +3692,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3668,7 +3715,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3696,7 +3744,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3718,7 +3767,8 @@ class External:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3843,7 +3893,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3867,7 +3918,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3891,7 +3943,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3947,7 +4000,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3971,7 +4025,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -3995,7 +4050,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -4080,7 +4136,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -4102,7 +4159,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -4185,7 +4243,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
@@ -4207,7 +4266,8 @@ class Entitlements:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
         elif response.status_code == 404:
-            raise Exception(f"Error {response.status_code}: {response.reason}")
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
         elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
