@@ -324,3 +324,20 @@
     * Added new_im_tag
     * Added update_im_tag
     * Added delete_im_tag
+
+12-04-2021
+* Config Class
+    * Fixed typos
+    * Added new_im_stream
+    * Added update_im_stream
+    * Added delete_im_stream
+    * Added new_im_version
+    * Added update_im_version
+    * Added delete_im_version
+
+13-04-2021
+* Inventory Class
+    * Small fixes to new_farm
+
+14-04-2021
+* Refactoring of 404 errors
