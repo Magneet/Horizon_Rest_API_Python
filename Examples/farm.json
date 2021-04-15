@@ -1,0 +1,69 @@
+{
+    "access_group_id": "6fd4638a-381f-4518-aed6-042aa3d9f14c",
+    "automated_farm_settings": {
+        "customization_settings": {
+            "ad_container_rdn": "OU=Pod1,OU=RDS,OU=VMware,OU=EUC",
+            "instant_clone_domain_account_id": "6f85b3a5-e7d0-4ad6-a1e3-37168dd1ed51",
+            "reuse_pre_existing_accounts": true
+        },
+        "enable_provisioning": false,
+        "max_session_type": "LIMITED",
+        "max_sessions": 50,
+        "min_ready_vms": 1,
+        "pattern_naming_settings": {
+            "max_number_of_rds_servers": 2,
+            "naming_pattern": "vm-{n}-sales"
+        },
+        "provisioning_settings": {
+            "base_snapshot_id": "snapshot-1",
+            "datacenter_id": "datacenter-1",
+            "host_or_cluster_id": "domain-s425",
+            "parent_vm_id": "vm-2",
+            "resource_pool_id": "resgroup-1",
+            "vm_folder_id": "group-v1"
+        },
+        "stop_provisioning_on_error": true,
+        "storage_settings": {
+            "datastores": [
+                {
+                    "datastore_id": "datastore-1"
+                }
+            ],
+            "use_separate_datastores_replica_and_os_disks": false,
+            "use_view_storage_accelerator": false,
+            "use_vsan": false
+        },
+        "transparent_page_sharing_scope": "VM",
+        "vcenter_id": "f148f3e8-db0e-4abb-9c33-7e5205ccd360"
+    },
+    "description": "demo_farm",
+    "display_name": "demo_farm",
+    "display_protocol_settings": {
+        "allow_users_to_choose_protocol": true,
+        "default_display_protocol": "BLAST",
+        "grid_vgpus_enabled": false,
+        "session_collaboration_enabled": true
+    },
+    "enabled": false,
+    "load_balancer_settings": {
+        "cpu_threshold": 10,
+        "disk_queue_length_threshold": 15,
+        "disk_read_latency_threshold": 10,
+        "disk_write_latency_threshold": 15,
+        "include_session_count": true,
+        "memory_threshold": 10
+    },
+    "name": "demo_farm",
+    "server_error_threshold": 0,
+    "session_settings": {
+        "disconnected_session_timeout_minutes": 5,
+        "disconnected_session_timeout_policy": "NEVER",
+        "empty_session_timeout_minutes": 5,
+        "empty_session_timeout_policy": "AFTER",
+        "logoff_after_timeout": false,
+        "pre_launch_session_timeout_minutes": 10,
+        "pre_launch_session_timeout_policy": "AFTER"
+    },
+    "type": "AUTOMATED",
+    "use_custom_script_for_load_balancing": false
+}
