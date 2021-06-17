@@ -969,11 +969,11 @@ Classes
         Requires session_id
         Available for Horizon 8 2006 and later.
 
-    `get_sessions(self, maxpagesize: int = 100) ‑> list`
+    `get_sessions(self, filter: dict = '', maxpagesize: int = 100) ‑> list`
     :   Lists the Session information in the environment.
         
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
-        Available for Horizon 8 2006 and later.
+        Available for Horizon 8 2006 and later, filtering available since Horizon 2103.
 
     `logoff_sessions(self, session_ids: list, forced_logoff: bool = False)`
     :   Logs user sessions off.
