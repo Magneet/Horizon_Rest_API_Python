@@ -319,8 +319,8 @@ class Inventory:
         def int_get_machines(self, page:int, maxpagesize: int, filter:dict="") ->list:
             if filter != "":
                 filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
-                add_filter = f"?filter={filter_url}"
-                response = requests.get(f'{self.url}/rest/inventory/v1/machines{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+                add_filter = f"{filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v1/machines?filter={add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
             else:
                 response = requests.get(f'{self.url}/rest/inventory/v1/machines?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
             if response.status_code == 400:
@@ -552,14 +552,21 @@ class Inventory:
             else:
                 return response.json()
 
-    def get_sessions(self, maxpagesize:int=100) -> list:
+    def get_sessions(self, filter:dict="", maxpagesize:int=100) -> list:
         """Lists the Session information in the environment.
 
         Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
-        Available for Horizon 8 2006 and later."""
+        Available for Horizon 8 2006 and later, filtering available since Horizon 2103."""
 
-        def int_get_sessions(self, page:int, maxpagesize: int) ->list:
-            response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+        def int_get_sessions(self, page:int, maxpagesize: int, filter:dict="") ->list:
+            if filter !="":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"{filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v1/sessions?filter={add_filter}&page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+
+            # response = requests.get(f'{self.url}/rest/inventory/v1/sessions?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
             if response.status_code == 400:
                 error_message = (response.json())["error_message"]
                 raise Exception(f"Error {response.status_code}: {error_message}")
@@ -575,11 +582,11 @@ class Inventory:
         if maxpagesize > 1000:
             maxpagesize = 1000
         page = 1
-        response = int_get_sessions(self,page = page, maxpagesize= maxpagesize)
+        response = int_get_sessions(self,page = page, maxpagesize= maxpagesize, filter= filter)
         results = response.json()
         while 'HAS_MORE_RECORDS' in response.headers:
             page += 1
-            response = int_get_sessions(self,page = page, maxpagesize= maxpagesize)
+            response = int_get_sessions(self,page = page, maxpagesize= maxpagesize, filter= filter)
             results += response.json()
         return results
 
