@@ -3362,6 +3362,85 @@ class Config:
             else:
                 return response.json()
 
+    def get_federation_access_groups(self) -> list:
+        """Lists all federation access groups.
+
+        Available for Horizon 8 2106 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/federation-access-groups', verify=False,  headers=self.access_token)
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_federation_access_group(self,id) -> dict:
+        """Retrieves a federation access group.
+
+        Requires the id of an Instant Clone Admin account to be provided as id
+        Available for Horizon 8 2106 and later."""
+        response = requests.get(f'{self.url}/rest/config/v1/federation-access-groups/{id}', verify=False,  headers=self.access_token)
+        if response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def new_federation_access_group(self, name: str, description: str):
+        """Creates federation access group.
+
+        Requires name and description as string
+        Available for Horizon 8 2106 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {"name": name, "description": description,}
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/config/v1/federation-access-groups', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_federation_access_group(self,id: str):
+        """Deletes a federation access group.
+
+        Requires id of a federation access group
+        Available for Horizon 8 2106 and later."""
+        response = requests.delete(f'{self.url}/rest/config/v1/federation-access-groups/{id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
 class External:
     def __init__(self, url: str, access_token: dict):
         """Default object for the External class for resources that are external to Horizon environment."""
@@ -3372,6 +3451,24 @@ class External:
         """Lists information related to AD Domains of the environment.
 
         Available for Horizon 7.11 and later."""
+        response = requests.get(f'{self.url}/rest/external/v1/ad-domains', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_ad_domains_v3(self) -> list:
+        """Lists information related to AD Domains of the environment.
+
+        Available for Horizon 8 2106 and later."""
         response = requests.get(f'{self.url}/rest/external/v1/ad-domains', verify=False,  headers=self.access_token)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
@@ -3846,6 +3943,132 @@ class External:
                 raise "Error: " + str(e)
             else:
                 return response.json()
+
+    def new_auxiliary_account(self, domain_id: str, username: str, password: str):
+        """Add auxiliary accounts to the untrusted domain
+
+        Requires domain_id, username and password as string
+        Available for Horizon 8 2106 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["auxiliary_accounts"] = []
+        auxiliary_account = {}
+        auxiliary_account["password"] = password
+        auxiliary_account["username"] = username
+        (data["auxiliary_accounts"]).append(auxiliary_account)
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/external/v1/ad-domains/{domain_id}/action/add-auxiliary-accounts', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def delete_auxiliary_account(self, domain_id: str, auxiliary_account_ids: list):
+        """deletes auxiliary accounts from the untrusted domain
+
+        Requires domain_id as string and auxiliary_account_ids as a list
+        Available for Horizon 8 2106 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["auxiliary_account_ids"] = auxiliary_account_ids
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/external/v1/ad-domains/{domain_id}/action/delete-auxiliary-accounts', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_auxiliary_account(self, auxiliary_account_id: str, password : str):
+        """updates auxiliary accounts of the untrusted domain
+
+        Requires auxiliary_account_id and password as string
+        Available for Horizon 8 2106 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["auxiliary_accounts"] = []
+        auxiliary_account = {}
+        auxiliary_account["id"] = auxiliary_account_id
+        auxiliary_account["password"] = password
+        (data["auxiliary_accounts"]).append(auxiliary_account)
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/external/v1/ad-domains/action/update-auxiliary-accounts', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def get_audit_events(self, filter:dict="", maxpagesize:int=100) -> list:
+        """Lists the audit events.
+
+        Requires nothing
+        Available for Horizon 8 2106 and later."""
+
+        def int_get_audit_events(self, page:int, maxpagesize: int, filter:dict="") ->list:
+            if filter !="":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"{filter_url}"
+                response = requests.get(f'{self.url}/rest/external/v1/audit-events?filter={add_filter}&page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/external/v1/audit-events?page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_audit_events(self,page = page, maxpagesize= maxpagesize, filter= filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_audit_events(self,page = page, maxpagesize= maxpagesize, filter= filter)
+            results += response.json()
+        return results
 
 class Entitlements:
     def __init__(self, url: str, access_token: dict):

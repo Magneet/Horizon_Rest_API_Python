@@ -341,3 +341,15 @@
 
 14-04-2021
 * Refactoring of 404 errors
+
+28-07-2021
+* Config Class
+    * Added get_federation_access_groups
+    * Added new_federation_access_group
+    * Added delete_federation_access_group
+    * Added get_federation_access_group
+    * new_auxiliary_account
+    * get_ad_domains_v3
+    * update_auxiliary_account
+    * delete_auxiliary_account
+    * get_audit_events

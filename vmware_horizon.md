@@ -9,6 +9,12 @@ Classes
 
     ### Methods
 
+    `delete_federation_access_group(self, id: str)`
+    :   Deletes a federation access group.
+        
+        Requires id of a federation access group
+        Available for Horizon 8 2106 and later.
+
     `delete_ic_domain_account(self, id: str)`
     :   Removes Instant Clone Domain Account from the environment
         
@@ -39,6 +45,17 @@ Classes
     :   Retrieves the environment settings.
         
         Available for Horizon 7.12 and later.
+
+    `get_federation_access_group(self, id) ‑> dict`
+    :   Retrieves a federation access group.
+        
+        Requires the id of an Instant Clone Admin account to be provided as id
+        Available for Horizon 8 2106 and later.
+
+    `get_federation_access_groups(self) ‑> list`
+    :   Lists all federation access groups.
+        
+        Available for Horizon 8 2106 and later.
 
     `get_ic_domain_account(self, id) ‑> dict`
     :   Gets a single instant clone domain account.
@@ -128,6 +145,12 @@ Classes
     :   Lists Virtual Centers configured in the environment.
         
         Available for Horizon 7.11 and later.
+
+    `new_federation_access_group(self, name: str, description: str)`
+    :   Creates federation access group.
+        
+        Requires name and description as string
+        Available for Horizon 8 2106 and later.
 
     `new_ic_domain_account(self, ad_domain_id: str, username: str, password: str)`
     :   Creates Instant Clone Domain Account
@@ -429,10 +452,21 @@ Classes
         
         Available for Horizon 8 2103 and later.
 
+    `delete_auxiliary_account(self, domain_id: str, auxiliary_account_ids: list)`
+    :   deletes auxiliary accounts from the untrusted domain
+        
+        Requires domain_id as string and auxiliary_account_ids as a list
+        Available for Horizon 8 2106 and later.
+
     `get_ad_domains(self) ‑> list`
     :   Lists information related to AD Domains of the environment.
         
         Available for Horizon 7.11 and later.
+
+    `get_ad_domains_v3(self) ‑> list`
+    :   Lists information related to AD Domains of the environment.
+        
+        Available for Horizon 8 2106 and later.
 
     `get_ad_users_or_group(self, id) ‑> dict`
     :   Get information related to AD User or Group.
@@ -446,6 +480,12 @@ Classes
         If group_only is passed as True only groups are returned, if users_only is passed as False only users are returned. If both are passed a True an error will be raised.
         Supports pagination and filtering
         Available for Horizon 7.12 and later.
+
+    `get_audit_events(self, filter: dict = '', maxpagesize: int = 100) ‑> list`
+    :   Lists the audit events.
+        
+        Requires nothing
+        Available for Horizon 8 2106 and later.
 
     `get_base_snapshots(self, vcenter_id: str, base_vm_id: str) ‑> list`
     :   Lists all the VM snapshots from the vCenter for a given VM.
@@ -531,6 +571,18 @@ Classes
         
         Requires vcenter_id and datacenter id
         Available for Horizon 7.12 and later.
+
+    `new_auxiliary_account(self, domain_id: str, username: str, password: str)`
+    :   Add auxiliary accounts to the untrusted domain
+        
+        Requires domain_id, username and password as string
+        Available for Horizon 8 2106 and later.
+
+    `update_auxiliary_account(self, auxiliary_account_id: str, password: str)`
+    :   updates auxiliary accounts of the untrusted domain
+        
+        Requires auxiliary_account_id and password as string
+        Available for Horizon 8 2106 and later.
 
 `Federation(url: str, access_token: dict)`
 :   Default object for the pools class where all Desktop Pool Actions will be performed.
