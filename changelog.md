@@ -353,3 +353,9 @@
     * update_auxiliary_account
     * delete_auxiliary_account
     * get_audit_events
+
+01-12-2021
+* Inventory Class
+    * Added delete_desktop_pool
+    * Added delete_global_application_entitlement
+    * Added delete_global_desktop_entitlement
