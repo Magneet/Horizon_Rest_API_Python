@@ -2009,6 +2009,61 @@ class Inventory:
             else:
                 return response.json()
 
+    def delete_desktop_pool(self, pool_id:str):
+        """Deletes a desktop pool.
+
+        Requires id of a Desktop Pool
+        Available for Horizon 8 2111 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/desktop-pools/{pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def delete_global_application_entitlement(self, global_application_entitlement_id:str):
+        """Deletes a Global Application Entitlement.
+
+        Requires id of a Global Application Entitlement
+        Available for Horizon 8 2111 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/global-application-entitlements/{global_application_entitlement_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def delete_global_desktop_entitlement(self, global_desktop_entitlement_id:str):
+        """Deletes a Global Desktop Entitlement.
+
+        Requires id of a Global Desktop Entitlement
+        Available for Horizon 8 2111 and later."""
+        response = requests.delete(f'{self.url}/rest/inventory/v1/global-desktop-entitlements/{global_desktop_entitlement_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""
