@@ -359,3 +359,21 @@
     * Added delete_desktop_pool
     * Added delete_global_application_entitlement
     * Added delete_global_desktop_entitlement
+
+01-12-2021
+* Inventory Class
+    * get_global_sessions
+    * get_application_pool_v2
+    * get_application_pools_v2
+    * get_desktop_pool_v2 (first release with pagination & filtering)
+    * get_desktop_pools_v2
+    * get_desktop_pool_v3
+    * get_desktop_pools_v3
+    * get_desktop_pool_v4
+    * get_desktop_pools_v4
+    * get_desktop_pool_v5
+    * get_desktop_pools_v5
+    * get_farm_v2
+    * get_farms_v2
+    * get_farm_v3
+    * get_farms_v3
