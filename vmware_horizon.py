@@ -2064,6 +2064,465 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def get_global_sessions(self, brokering_pod_id:str="" , pod_id:str="" , user_id:str="", maxpagesize:int=100) -> list:
+        """Lists the Global Session information in the environment.
+
+        Requires either user_id, pod_id or brokering_pod_id
+        No filtering possible in h8 2111
+        Will default to 1000 results with a pagesize of 100, max pagesize is 1000.
+        Available for Horizon 8 2111 and later."""
+        if brokering_pod_id == "" and pod_id == "" and user_id == "":
+            raise Exception(f"Error: either brokering_pod_id, pod_id or user_id has to be supplied.")
+        elif brokering_pod_id != "" and pod_id != "" and user_id == "":
+            raise Exception(f"Error: either brokering_pod_id, pod_id or user_id has to be supplied not multiple.")
+        elif brokering_pod_id == "" and pod_id != "" and user_id != "":
+            raise Exception(f"Error: either brokering_pod_id, pod_id or user_id has to be supplied not multiple.")
+        elif brokering_pod_id != "" and pod_id == "" and user_id != "":
+            raise Exception(f"Error: either brokering_pod_id, pod_id or user_id has to be supplied not multiple.")
+        elif brokering_pod_id != "" and pod_id != "" and user_id != "":
+            raise Exception(f"Error: either brokering_pod_id, pod_id or user_id has to be supplied not multiple.")
+
+        def int_get_global_sessions(self, page:int, maxpagesize: int, brokering_pod_id: str, pod_id: str, user_id: str, filter:dict="") ->list:
+            if brokering_pod_id != "":
+                response = requests.get(f'{self.url}/rest/inventory/v1/global-sessions?brokering_pod_id={brokering_pod_id}&page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            elif pod_id != "":
+                response = requests.get(f'{self.url}/rest/inventory/v1/global-sessions?pod_id={pod_id}&page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+            elif user_id != "":
+                response = requests.get(f'{self.url}/rest/inventory/v1/global-sessions?user_id={user_id}&page={page}&size={maxpagesize}', verify=False,  headers=self.access_token)
+
+            if response.status_code == 400:
+                error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_global_sessions(self,page = page, maxpagesize= maxpagesize, user_id=user_id, brokering_pod_id=brokering_pod_id, pod_id=pod_id , filter= filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_global_sessions(self,page = page, maxpagesize= maxpagesize, user_id=user_id, brokering_pod_id=brokering_pod_id, pod_id=pod_id , filter= filter)
+            results += response.json()
+        return results
+
+    def get_application_pools_v2(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the application pools in the environment.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2111 and later."""
+        def int_get_application_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v2/application-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v2/application-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_application_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_application_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_application_pool_v2(self, application_pool_id: str) -> dict:
+        """Gets a single Application pool
+
+        Requires Application_pool_id
+        Available for Horizon 8 2111 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v2/application-pools/{application_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pools_v2(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Returns a list of dictionaries with all available Desktop Pools. 
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2006 and later."""
+
+        def int_get_desktop_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v2/desktop-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v2/desktop-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_desktop_pool_v2(self, desktop_pool_id: str) -> dict:
+        """Gets the Desktop Pool information.
+
+        Requires id of a desktop pool
+        Available for Horizon 8 2006 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v2/desktop-pools/{desktop_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pools_v3(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Returns a list of dictionaries with all available Desktop Pools. 
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2012 and later."""
+
+        def int_get_desktop_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v3/desktop-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v3/desktop-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_desktop_pool_v3(self, desktop_pool_id: str) -> dict:
+        """Gets the Desktop Pool information.
+
+        Requires id of a desktop pool
+        Available for Horizon 8 2012 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v3/desktop-pools/{desktop_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pools_v4(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Returns a list of dictionaries with all available Desktop Pools. 
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2103 and later."""
+
+        def int_get_desktop_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v4/desktop-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v4/desktop-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_desktop_pool_v4(self, desktop_pool_id: str) -> dict:
+        """Gets the Desktop Pool information.
+
+        Requires id of a desktop pool
+        Available for Horizon 8 2103 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v4/desktop-pools/{desktop_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_desktop_pools_v5(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Returns a list of dictionaries with all available Desktop Pools. 
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2111 and later."""
+
+        def int_get_desktop_pools(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v5/desktop-pools{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v5/desktop-pools?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_desktop_pools(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_desktop_pool_v5(self, desktop_pool_id: str) -> dict:
+        """Gets the Desktop Pool information.
+
+        Requires id of a desktop pool
+        Available for Horizon 8 2111 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v5/desktop-pools/{desktop_pool_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_farms_v2(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the Farms in the environment.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2103 and later."""
+
+        def int_get_farms(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v2/farms{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v2/farms?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_farms(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_farms(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_farm_v2(self, farm_id:str) -> dict:
+        """Gets the Farm information.
+
+        Requires id of a RDS Farm
+        Available for Horizon 8 2111 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v2/farms/{farm_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def get_farms_v3(self, maxpagesize:int=100, filter:dict="") -> list:
+        """Lists the Farms in the environment.
+
+        For information on filtering see https://vdc-download.vmware.com/vmwb-repository/dcr-public/f92cce4b-9762-4ed0-acbd-f1d0591bd739/235dc19c-dabd-43f2-8d38-8a7a333e914e/HorizonServerRESTPaginationAndFilterGuide.doc
+        Available for Horizon 8 2111 and later."""
+
+        def int_get_farms_v3(self, page:int, maxpagesize: int, filter:list="") ->list:
+            if filter != "":
+                filter_url = urllib.parse.quote(json.dumps(filter,separators=(', ', ':')))
+                add_filter = f"?filter={filter_url}"
+                response = requests.get(f'{self.url}/rest/inventory/v3/farms{add_filter}&page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            else:
+                response = requests.get(f'{self.url}/rest/inventory/v3/farms?page={page}&size={maxpagesize}', verify=False, headers=self.access_token)
+            if response.status_code == 400:
+                if "error_messages" in response.json():
+                    error_message = (response.json())["error_messages"]
+                else:
+                    error_message = (response.json())["error_message"]
+                raise Exception(f"Error {response.status_code}: {error_message}")
+            elif response.status_code != 200:
+                raise Exception(f"Error {response.status_code}: {response.reason}")
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise "Error: " + str(e)
+                else:
+                    return response
+        if maxpagesize > 1000:
+            maxpagesize = 1000
+        page = 1
+        response = int_get_farms_v3(self,page = page, maxpagesize= maxpagesize,filter = filter)
+        results = response.json()
+        while 'HAS_MORE_RECORDS' in response.headers:
+            page += 1
+            response = int_get_farms_v3(self,page = page, maxpagesize= maxpagesize, filter = filter)
+            results += response.json()
+        return results
+
+    def get_farm_v3(self, farm_id:str) -> dict:
+        """Gets the Farm information.
+
+        Requires id of a RDS Farm
+        Available for Horizon 8 2103 and later."""
+        response = requests.get(f'{self.url}/rest/inventory/v3/farms/{farm_id}', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""
