@@ -377,3 +377,14 @@
     * get_farms_v2
     * get_farm_v3
     * get_farms_v3
+
+06-12-2021
+* Inventory Class
+    * get_application_pools_v3
+    * get_application_pool_v3
+    * get_machines_v2
+    * get_machine_v2
+    * get_global_desktop_entitlements_v2
+    * get_global_desktop_entitlement_v2
+    * get_global_application_entitlements_v2
+    * get_global_application_entitlement_v2
