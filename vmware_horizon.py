@@ -2762,6 +2762,37 @@ class Inventory:
             results += response.json()
         return results
 
+    def new_desktop_pool(self,pool_data:dict):
+        """Creates a Desktop_Pool.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(pool_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""

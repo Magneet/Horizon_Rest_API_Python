@@ -388,3 +388,7 @@
     * get_global_desktop_entitlement_v2
     * get_global_application_entitlements_v2
     * get_global_application_entitlement_v2
+
+13-12-2021
+* Inventory Class
+    * Added new_desktop_pool
