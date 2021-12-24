@@ -2793,6 +2793,173 @@ class Inventory:
             else:
                 return response.status_code
 
+    def desktop_validate_installed_applications(self,desktop_pool_id:str,application_paths:list):
+        """ Validates that each application in the given list is installed on the machines belonging to the specified desktop pool.
+
+        Requires application_paths as a list
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_paths)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/action/validate-installed-applications', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def farm_validate_installed_applications(self,farm_id:str,application_paths:list):
+        """ Validates that each application in the given list is installed on the machines belonging to the specified RDS Farm.
+
+        Requires application_paths as a list
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_paths)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/{farm_id}/action/validate-installed-applications', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def desktop_validate_specified_names(self,validation_object:dict):
+        """ Validates manually specified virtual machines. Ensures machine and user names are valid and aren't duplicated in the given desktop pool.
+
+        Requires application_paths as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(validation_object)
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/action/validate-specified-names', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def farm_add_rds_servers(self,farm_id:str,rds_server_ids:list):
+        """ Add RDS servers to the specified manual farm.
+
+        Requires farm_id as a string and rds_server_ids as a list
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(rds_server_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/{farm_id}/action/add-rds-servers', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def farm_cancel_scheduled_maintenance(self,farm_id:str,maintenance_type:str):
+        """ Requests cancellation of the current scheduled maintenance on the specified Instant Clone farm.
+
+        Requires farm_id as a string and rds_server_ids as a string
+        Available for Horizon 8 2111 and later."""
+        validtypes = ["RECURRING","IMMEDIATE"]
+        if maintenance_type not in validtypes:
+            raise Exception(f"maintenance type needs to be either RECURRING or IMMEDIATE")
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        data = {}
+        data["maintenance_mode"] = maintenance_type
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/{farm_id}/action/cancel-scheduled-maintenance', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def farm_remove_rds_servers(self,farm_id:str,rds_server_ids:list):
+        """ Removes RDS servers to the specified manual farm.
+
+        Requires farm_id as a string and rds_server_ids as a list
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(rds_server_ids)
+        response = requests.post(f'{self.url}/rest/inventory/v1/farms/{farm_id}/action/remove-rds-servers', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
 class Monitor:
     def __init__(self, url: str, access_token: dict):
         """Default object for the monitor class used for the monitoring of the various VMware Horiozn services."""

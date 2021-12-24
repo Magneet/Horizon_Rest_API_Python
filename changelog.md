@@ -392,3 +392,12 @@
 13-12-2021
 * Inventory Class
     * Added new_desktop_pool
+
+24-12-2021
+* Inventory Class
+    * Added desktop_validate_installed_applications
+    * Added farm_validate_installed_applications
+    * Added desktop_validate_specified_names
+    * Added farm_add_rds_servers
+    * Added farm_cancel_scheduled_maintenance
+    * Added farm_remove_rds_servers
