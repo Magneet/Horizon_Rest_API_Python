@@ -401,3 +401,7 @@
     * Added farm_add_rds_servers
     * Added farm_cancel_scheduled_maintenance
     * Added farm_remove_rds_servers
+
+06-01-2022
+* Inventory Class
+    * Added new_application_pool_v2

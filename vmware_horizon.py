@@ -831,6 +831,34 @@ class Inventory:
             else:
                 return response.status_code
 
+    def new_application_pool_v2(self,application_pool_data:dict):
+        """Creates an application pool.
+
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.post(f'{self.url}/rest/inventory/v2/application-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
     def update_application_pool(self, application_pool_id:str, application_pool_data:dict):
         """Updates an application pool.
 
