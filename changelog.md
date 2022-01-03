@@ -408,3 +408,4 @@
     * Added update_application_pool_v2
     * Added update_farm_v2
     * Added add_global_desktop_entitlement_v2
+    * Added new_farm_v2
