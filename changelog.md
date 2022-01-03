@@ -405,3 +405,4 @@
 06-01-2022
 * Inventory Class
     * Added new_application_pool_v2
+    * Added update_application_pool_v2

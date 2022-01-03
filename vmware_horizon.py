@@ -885,6 +885,32 @@ class Inventory:
             else:
                 return response.status_code
 
+    def update_application_pool_v2(self, application_pool_id:str, application_pool_data:dict):
+        """Updates an application pool.
+
+        The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.put(f'{self.url}/rest/inventory/v2/application-pools/{application_pool_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_messages"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
     def delete_application_pool(self,application_pool_id:str):
         """Deletes an application pool.
 
