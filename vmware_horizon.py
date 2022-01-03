@@ -216,6 +216,37 @@ class Inventory:
             else:
                 return response.status_code
 
+    def new_farm_v2(self,farm_data:dict):
+        """Creates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.post(f'{self.url}/rest/inventory/v2/farms', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
     def update_farm(self,farm_data : dict, farm_id : str):
         """Updates a farm.
 
@@ -225,6 +256,35 @@ class Inventory:
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(farm_data)
         response = requests.put(f'{self.url}rest/inventory/v1/farms/{farm_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_farm_v2(self,farm_data : dict, farm_id : str):
+        """Updates a farm.
+
+        Requires farm_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(farm_data)
+        response = requests.put(f'{self.url}rest/inventory/v2/farms/{farm_id}', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -831,6 +891,34 @@ class Inventory:
             else:
                 return response.status_code
 
+    def new_application_pool_v2(self,application_pool_data:dict):
+        """Creates an application pool.
+
+        Requires application_pool_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.post(f'{self.url}/rest/inventory/v2/application-pools', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 409:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
     def update_application_pool(self, application_pool_id:str, application_pool_data:dict):
         """Updates an application pool.
 
@@ -841,6 +929,32 @@ class Inventory:
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(application_pool_data)
         response = requests.put(f'{self.url}/rest/inventory/v1/application-pools/{application_pool_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_messages"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 401:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def update_application_pool_v2(self, application_pool_id:str, application_pool_data:dict):
+        """Updates an application pool.
+
+        The following keys are required to be present in the json: multi_session_mode, executable_path and enable_pre_launch
+        Requires ad_domain_id, username and password in plain text.
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(application_pool_data)
+        response = requests.put(f'{self.url}/rest/inventory/v2/application-pools/{application_pool_id}', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_messages"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -1213,6 +1327,29 @@ class Inventory:
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(global_desktop_entitlement_data)
         response = requests.post(f'{self.url}/rest/inventory/v1/global-desktop-entitlements', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def add_global_desktop_entitlement_v2(self, global_desktop_entitlement_data: dict):
+        """Creates a Global Desktop Entitlement.
+
+        Requires global_desktop_entitlement_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_desktop_entitlement_data)
+        response = requests.post(f'{self.url}/rest/inventory/v2/global-desktop-entitlements', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
