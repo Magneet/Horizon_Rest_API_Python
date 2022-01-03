@@ -1310,6 +1310,29 @@ class Inventory:
             except requests.exceptions.RequestException as e:
                 raise "Error: " + str(e)
 
+    def add_global_desktop_entitlement_v2(self, global_desktop_entitlement_data: dict):
+        """Creates a Global Desktop Entitlement.
+
+        Requires global_desktop_entitlement_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_desktop_entitlement_data)
+        response = requests.post(f'{self.url}/rest/inventory/v2/global-desktop-entitlements', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 201:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
     def get_global_desktop_entitlement_compatible_desktop_pools(self, global_desktop_entitlement_id:str) -> list:
         """Lists Local Application Pools which are compatible with Global Application Entitlement.
 
