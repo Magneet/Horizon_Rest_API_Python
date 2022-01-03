@@ -406,3 +406,4 @@
 * Inventory Class
     * Added new_application_pool_v2
     * Added update_application_pool_v2
+    * Added update_farm_v2
