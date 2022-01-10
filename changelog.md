@@ -409,3 +409,18 @@
     * Added update_farm_v2
     * Added add_global_desktop_entitlement_v2
     * Added new_farm_v2
+
+10-01-2022
+* Inventory Class
+    * Added update_global_desktop_entitlement
+    * Added update_global_application_entitlement
+    * Added update_desktop_pool
+    * Added send_message_global_sessions
+    * Corrected restart_session_machines to use /restart instead of /reset
+    * Fixed forced_logoff in logoff_sessions
+    * Fixed forced_logoff in delete_machines
+    * Fixed forced_logoff in delete_machines
+    * Added disconnect_global_sessions
+    * Added logoff_global_sessions
+    * Added reset_global_session_machines
+    * Added restart_global_session_machines

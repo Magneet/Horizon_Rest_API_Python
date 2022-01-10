@@ -414,6 +414,10 @@ class Inventory:
         Available for Horizon 7.12 and later."""
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
+        if force_logoff == True:
+            force_logoff="true"
+        else:
+            force_logoff="false"
         data={}
         data["allow_delete_from_multi_desktop_pools"] = delete_from_multiple_pools
         data["archive_persistent_disk"] = False
@@ -440,6 +444,10 @@ class Inventory:
         Available for Horizon 8 2006 and later."""
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
+        if force_logoff == True:
+            force_logoff="true"
+        else:
+            force_logoff="false"
         data={}
         machine_delete_data={}
         machine_delete_data["allow_delete_from_multi_desktop_pools"] = delete_from_multiple_pools
@@ -705,6 +713,10 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(session_ids)
+        if forced_logoff == True:
+            forced_logoff="true"
+        else:
+            forced_logoff="false"
         response = requests.post(f'{self.url}/rest/inventory/v1/sessions/action/logoff?forced={forced_logoff}', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
@@ -755,7 +767,7 @@ class Inventory:
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
         json_data = json.dumps(session_ids)
-        response = requests.post(f'{self.url}/rest/inventory/v1/sessions/action/reset', verify=False,  headers=headers, data=json_data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/sessions/action/restart', verify=False,  headers=headers, data=json_data)
         if response.status_code == 400:
             error_message = (response.json())["error_message"]
             raise Exception(f"Error {response.status_code}: {error_message}")
@@ -2902,7 +2914,7 @@ class Inventory:
     def new_desktop_pool(self,pool_data:dict):
         """Creates a Desktop_Pool.
 
-        Requires farm_data as a dict
+        Requires pool_data as a dict
         Available for Horizon 8 2111 and later."""
         headers = self.access_token
         headers["Content-Type"] = 'application/json'
@@ -3088,6 +3100,240 @@ class Inventory:
         elif response.status_code == 401:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def update_global_desktop_entitlement(self, global_desktop_entitlement_data: dict, global_desktop_entitlement_id: str):
+        """Updates a Global Desktop Entitlement.
+
+        Requires global_desktop_entitlement_data as a dict and global_desktop_entitlement_id as string
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_desktop_entitlement_data)
+        response = requests.put(f'{self.url}/rest/inventory/v1/global-desktop-entitlements/{global_desktop_entitlement_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def update_global_application_entitlement(self, global_application_entitlement_data: dict, global_application_entitlement_id: str):
+        """Updates a Global Application Entitlement.
+
+        Requires global_application_entitlement_data as a dict and global_application_entitlement_id as string
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(global_application_entitlement_data)
+        response = requests.put(f'{self.url}/rest/inventory/v1/global-desktop-entitlements/{global_application_entitlement_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+
+    def update_desktop_pool(self,pool_data:dict, desktop_pool_id:str):
+        """Changes a Desktop_Pool.
+
+        Requires pool_data as a dict
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        json_data = json.dumps(pool_data)
+        response = requests.put(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code == 401:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code == 409:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 204:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.status_code
+
+    def send_message_global_sessions(self, global_session_ids: list, message:str, pod_id:str, message_type:str="INFO"):
+        """Sends the message to global user sessions
+
+        Requires list of session ids, message type (INFO,WARNING,ERROR) and a message
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        details = {}
+        details["ids"] = global_session_ids
+        details["pod_id"] = pod_id
+        data={}
+        data["global_session_action_specs"]=[]
+        (data["global_session_action_specs"]).append(details)
+        data["message"] = message
+        data["message_type"] = message_type
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/global-sessions/action/send-message', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_messages"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def disconnect_global_sessions(self, global_session_ids: list, pod_id:str):
+        """Disconnects global sessions in the environment.
+
+        Requires list of global session ids and pod_id as string
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        details = {}
+        details["ids"] = global_session_ids
+        details["pod_id"] = pod_id
+        data=[]
+        (data).append(details)
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/global-sessions/action/disconnect', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def logoff_global_sessions(self, global_session_ids: list, pod_id:str, forced_logoff:bool=False):
+        """Logs global user sessions off.
+
+        Requires list of global session ids and pod_id as string. It is optional to set forced to True to force a log off (defaults to False)
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        details = {}
+        details["ids"] = global_session_ids
+        details["pod_id"] = pod_id
+        data=[]
+        (data).append(details)
+        json_data = json.dumps(data)
+        if forced_logoff == True:
+            forced_logoff="true"
+        else:
+            forced_logoff="false"
+        response = requests.post(f'{self.url}/rest/inventory/v1/global-sessions/action/logoff?forced={forced_logoff}', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def reset_global_session_machines(self, global_session_ids: list, pod_id:str):
+        """Resets machine of global user sessions. The machine must be managed by Virtual Center and the session cannot be an application or an RDS desktop session.
+
+        Requires list of global session ids and pod_id as string
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        details = {}
+        details["ids"] = global_session_ids
+        details["pod_id"] = pod_id
+        data=[]
+        (data).append(details)
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/global-sessions/action/reset', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def restart_global_session_machines(self, global_session_ids: list, pod_id:str):
+        """Restarts machine of global user sessions. The machine must be managed by Virtual Center and the session cannot be an application or an RDS desktop session.
+
+        Requires list of global session ids and pod_id as string
+        Available for Horizon 8 2111 and later."""
+        headers = self.access_token
+        headers["Content-Type"] = 'application/json'
+        details = {}
+        details["ids"] = global_session_ids
+        details["pod_id"] = pod_id
+        data=[]
+        (data).append(details)
+        json_data = json.dumps(data)
+        response = requests.post(f'{self.url}/rest/inventory/v1/global-sessions/action/restart', verify=False,  headers=headers, data=json_data)
+        if response.status_code == 400:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {response}")
+        elif response.status_code != 200:
             raise Exception(f"Error {response.status_code}: {response.reason}")
         else:
             try:
