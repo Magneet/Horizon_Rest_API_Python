@@ -424,3 +424,8 @@
     * Added logoff_global_sessions
     * Added reset_global_session_machines
     * Added restart_global_session_machines
+
+24-01-2022
+* Inventory Class
+    * Added pause_desktop_pool_task
+    * Added resume_desktop_pool_task

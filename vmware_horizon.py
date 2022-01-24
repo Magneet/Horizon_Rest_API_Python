@@ -2077,6 +2077,58 @@ class Inventory:
             else:
                 return response.json()
 
+    def pause_desktop_pool_task(self, desktop_pool_id:str, task_id:str) -> dict:
+        """Pauses the instant clone desktop pool push image task.
+
+        Available for Horizon 8 2111 and later."""
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/tasks/{task_id}/action/pause', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
+    def resume_desktop_pool_task(self, desktop_pool_id:str, task_id:str) -> dict:
+        """Resumes the instant clone desktop pool push image task.
+
+        Available for Horizon 8 2111 and later."""
+        response = requests.post(f'{self.url}/rest/inventory/v1/desktop-pools/{desktop_pool_id}/tasks/{task_id}/action/resume', verify=False,  headers=self.access_token)
+        if response.status_code == 400:
+            if "error_messages" in response.json():
+                error_message = (response.json())["error_messages"]
+            else:
+                error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        if response.status_code == 404:
+            error_message = (response.json())["error_message"]
+            raise Exception(f"Error {response.status_code}: {error_message}")
+        elif response.status_code == 403:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        elif response.status_code != 200:
+            raise Exception(f"Error {response.status_code}: {response.reason}")
+        else:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                raise "Error: " + str(e)
+            else:
+                return response.json()
+
     def check_application_name_availability(self,application_name: str)-> dict:
         """Checks if the given name is available for application pool creation.
 
